@@ -100,36 +100,52 @@ class ActivityData():
         plt.show()
 
     
-    def remove_time_dimension(self, window=52):
+    # def remove_time_dimension(self, window=52):
 
-        n_samples = len(self.data[s][:,0]) // window
-        print(n_samples)
-        subject_data = np.zeros((n_samples, len(self.data[s][0]) + 3))
-        for n in range(n_samples):
-            subject_data[n,:-3] = np.mean(self.data[s][n*window:(n+1)*window],
-                    axis=0)
-            subject_data[n,-3:] = np.std(self.data[s][n*window:(n+1)*window,1:4], axis=0)
+    #     n_samples = len(self.data[s][:,0]) // window
+    #     print(n_samples)
+    #     subject_data = np.zeros((n_samples, len(self.data[s][0]) + 3))
+    #     for n in range(n_samples):
+    #         subject_data[n,:-3] = np.mean(self.data[s][n*window:(n+1)*window],
+    #                 axis=0)
+    #         subject_data[n,-3:] = np.std(self.data[s][n*window:(n+1)*window,1:4], axis=0)
 
-        self.smp_data[s] = subject_data
+    #     self.smp_data[s] = subject_data
 
-        print(self.smp_data)
+    #     print(self.smp_data)
     
 
     def add_features(self, window=100):
         """Add features to model.
-        
-        Added features:
-        - Mean of x, y, z acceleration (3)
-        - Std of x, y, z acceleration (3)
-        - Minmax of x, y, z acceleration (3)
-        - Velocity in x, y, z direction (3)
-        - Magnitude of acceleration?
 
+        Old columns (6):
+        0: ID
+        1: sample number
+        2: x acc
+        3: y acc
+        4: z acc
+        5: activity
 
+        Added columns (12):
+        6: mean x acc
+        7: mean y acc
+        8: mean z acc
+        9: std x acc
+        10: std y acc
+        11: std z acc
+        12: minmax x acc
+        13: minmax y acc
+        14: minmax z acc
+        15: x vel
+        16: y vel
+        17: z vel
         """
+
 
         n_new_features = np.shape(self.data)[1] + 12
         self.new_data = np.empty((np.shape(self.data)[0], n_new_features))
+
+        self.new_data[
 
 
 
