@@ -6,6 +6,14 @@
 # ----------------------------------------------------------------------------
 # Description:
 #
+# --- Labels are codified by numbers
+#     --- 1: Working at Computer
+#     --- 2: Standing Up, Walking and Going up\down stairs
+#     --- 3: Standing
+#     --- 4: Walking
+#     --- 5: Going Up\Down Stairs
+#     --- 6: Walking and Talking with Someone
+#     --- 7: Talking while Standing
 # ============================================================================
 import sys
 import os
@@ -22,6 +30,7 @@ class ActivityData():
         self.n_subjects = len(subjects)
         
         self.load_data()
+        self.add_features()
 
 
 
@@ -31,7 +40,7 @@ class ActivityData():
         self.data = np.empty((0,6))
         
         for s in self.subjects:
-            raw_data = np.loadtxt(open(os.path.join(dirname, str(s) + '.csv'),
+            raw_data = np.loadtxt(open(os.path.join(self.dirname, str(s) + '.csv'),
                     'rb'), delimiter=',')
             n_samples = np.shape(raw_data)[0]
             n_features = np.shape(raw_data)[1]
@@ -100,22 +109,8 @@ class ActivityData():
         plt.show()
 
     
-    # def remove_time_dimension(self, window=52):
 
-    #     n_samples = len(self.data[s][:,0]) // window
-    #     print(n_samples)
-    #     subject_data = np.zeros((n_samples, len(self.data[s][0]) + 3))
-    #     for n in range(n_samples):
-    #         subject_data[n,:-3] = np.mean(self.data[s][n*window:(n+1)*window],
-    #                 axis=0)
-    #         subject_data[n,-3:] = np.std(self.data[s][n*window:(n+1)*window,1:4], axis=0)
-
-    #     self.smp_data[s] = subject_data
-
-    #     print(self.smp_data)
-    
-
-    def add_features(self, window=100):
+    def add_features(self, window=52):
         """Add features to model.
 
         Old columns (6):
@@ -126,33 +121,50 @@ class ActivityData():
         4: z acc
         5: activity
 
-        Added columns (12):
-        6: mean x acc
-        7: mean y acc
-        8: mean z acc
-        9: std x acc
-        10: std y acc
-        11: std z acc
-        12: minmax x acc
-        13: minmax y acc
-        14: minmax z acc
-        15: x vel
-        16: y vel
-        17: z vel
+        Added columns (13):
+        0: ID
+        1: mean sample number
+        2: mean x acc
+        3: mean y acc
+        4: mean z acc
+        5: activity
+        6: std x acc
+        7: std y acc
+        8: std z acc
+        9: minmax x acc
+        10: minmax y acc
+        11: minmax z acc
+        12: x vel
+        13: y vel
+        14: z vel
+        15: acc magnitude
         """
 
 
-        n_new_features = np.shape(self.data)[1] + 12
-        self.new_data = np.empty((np.shape(self.data)[0], n_new_features))
+        n_new_features = np.shape(self.data)[1] + 3
+        n_new_samples = len(self.data[:,0]) // window
+        self.new_data = np.empty((n_new_samples, n_new_features))
 
-        self.new_data[
+        for n in range(n_new_samples):
+            self.new_data[n,:-3] = np.mean(self.data[n*window:(n+1)*window], axis=0)
+            self.new_data[n,-3:] = np.std(self.data[n*window:(n+1)*window,2:5], axis=0)
+            self.new_data[n,5] = np.asarray(self.new_data[n,5], dtype=int)
 
 
+
+    def get_matrices(self):
+
+        X_columns = [2,3,4,6,7,8]
+        y_columns = [5]
+        X = self.new_data[:, X_columns]
+        y = np.asarray(np.ravel(self.new_data[:, y_columns]), dtype=int)
+
+        return X, y
 
         
 
 if __name__ == '__main__':
     dirname = 'data/activity/'
-    data = ActivityData(dirname, subjects=[1,2])
+    data = ActivityData(dirname, subjects=[1])
     # data.explore_data()
-    # data.simplify_features()
+    data.add_features()
