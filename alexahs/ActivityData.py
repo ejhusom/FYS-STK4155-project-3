@@ -62,13 +62,13 @@ class ActivityData:
         for i in range(n_rows - 1):
             start = i*step
             stop = start + 2*step
-            interval_acc = self.classes[which_class][start:stop,:-1]
-            frequency[i,:] = np.mean(np.real(np.fft.rfft(interval_acc, axis=0)), axis=0)
 
+            interval_acc = self.classes[which_class][start:stop,:-1]
+
+            frequency[i,:] = np.linalg.norm(np.fft.rfft(interval_acc, axis=0), axis=0, ord=2)
             acc_mean[i,:] = np.mean(interval_acc, axis=0)
             acc_std[i,:] = np.std(interval_acc, axis=0)
             magnitude[i] = np.linalg.norm(acc_mean[i, :], ord=2)
-
             minmax[i,:] = np.max((interval_acc), axis=0) - np.min((interval_acc), axis=0)
 
 
