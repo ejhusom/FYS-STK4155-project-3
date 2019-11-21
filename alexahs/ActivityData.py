@@ -3,10 +3,10 @@ import os, glob
 
 class ActivityData:
 
-    def __init__(self, dir, remove_files = None):
+    def __init__(self, dir, n_files = None):
         self.freq = 52
         self.dir = dir
-        self.remove_files = remove_files
+        self.n_files = n_files
 
     def load_data(self):
         dir_list = os.listdir(self.dir)
@@ -14,6 +14,9 @@ class ActivityData:
         for file in dir_list:
             if file.endswith('.csv'):
                 filenames.append(file)
+
+        if self.n_files != None:
+            filenames = filenames[:self.n_files]
 
         data_temp = {}
 
@@ -52,13 +55,15 @@ class ActivityData:
         acc_std = np.zeros((n_rows-1, 3))
         minmax = np.zeros((n_rows-1, 3))
         mean_vel = np.zeros((n_rows-1, 3))
-        magnitude = np.zeros(n_rows-1)
+        magnitude = np.zeros((n_rows-1, 1))
+        frequency = np.zeros((n_rows-1, 3))
 
 
         for i in range(n_rows - 1):
             start = i*step
             stop = start + 2*step
             interval_acc = self.classes[which_class][start:stop,:-1]
+            frequency[i,:] = np.mean(np.real(np.fft.rfft(interval_acc, axis=0)), axis=0)
 
             acc_mean[i,:] = np.mean(interval_acc, axis=0)
             acc_std[i,:] = np.std(interval_acc, axis=0)
@@ -72,20 +77,16 @@ class ActivityData:
             mean_vel[i,:] = mean_vel[i-1,:] + acc_mean[i,:]*dt
 
 
-        target = np.ones((n_rows - 1, 1))*which_class
+        targets = np.ones(n_rows - 1)*which_class
 
-        magnitude = magnitude.reshape(n_rows - 1, 1)
 
-        feature_matrix = np.concatenate((acc_mean,
+        features = np.concatenate((acc_mean,
                             acc_std,
                             minmax,
                             mean_vel,
                             magnitude,
-                            target), axis=1)
+                            frequency), axis=1)
 
-
-        features = feature_matrix[:,:-1]
-        targets = feature_matrix[:,-1]
 
         return features, targets
 
