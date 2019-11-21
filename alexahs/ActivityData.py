@@ -1,31 +1,19 @@
 import numpy as np
-import os
+import os, glob
 
 class ActivityData:
-    """
-    den funker ish nå, bare å initialisere med data directory
-    også kalle på get_feature_matrix() som returnerer ferdigbehandlet X og y.
 
-    får feilmelding når jeg prøver å lese inn alle filene, så inntil videre
-    laster den bare inn de fem første. ser ut som det er noe med formatet til
-    filen "12.csv" som den ikke liker..
-    """
-
-
-    def __init__(self, dir):
+    def __init__(self, dir, remove_files = None):
         self.freq = 52
         self.dir = dir
+        self.remove_files = remove_files
 
     def load_data(self):
-        filenames = os.listdir(self.dir)
-        filenames.remove('README')
-
-
-        """
-        fikk feilmelding da jeg leste alle filene,
-        så leser bare et utvalg inntil videre..
-        """
-        filenames = filenames[:5]
+        dir_list = os.listdir(self.dir)
+        filenames = []
+        for file in dir_list:
+            if file.endswith('.csv'):
+                filenames.append(file)
 
         data_temp = {}
 
@@ -41,7 +29,7 @@ class ActivityData:
         for i in range(2, len(filenames)+1):
             self.data = np.concatenate((self.data, data_temp[i]), axis=0)
 
-        print('Loading complete')
+        print('Loading complete.')
 
 
     def split_classes(self):
@@ -79,7 +67,7 @@ class ActivityData:
             minmax[i,:] = np.max((interval_acc), axis=0) - np.min((interval_acc), axis=0)
 
 
-        dt = 1 #sec
+        dt = 1
         for i in range(1, n_rows - 1):
             mean_vel[i,:] = mean_vel[i-1,:] + acc_mean[i,:]*dt
 
@@ -116,4 +104,4 @@ class ActivityData:
             y = np.concatenate((y, y_temp), axis=0)
 
 
-        return X, y
+        return X, y.astype(int)
