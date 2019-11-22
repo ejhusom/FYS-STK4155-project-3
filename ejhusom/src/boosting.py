@@ -135,20 +135,23 @@ class AnalyzeBoost():
             print(f'Number of test samples: {np.shape(self.X_test)[0]}')
             print(f'Method: {method}')
 
-        self.analyze()
 
-
-
-    def analyze(self):
         if self.method == 'adaboost':
             self.adabooster()
+            self.max_depth_str = 'base_estimator__max_depth'
         elif self.method == 'gradientboost':
             self.gradientbooster()
+            self.max_depth_str = 'max_depth'
         elif self.method == 'xgboost':
             self.xgbooster()
+            self.max_depth_str = 'max_depth'
         else:
             print('Provide boost method.')
             sys.exit(1)
+
+
+
+    def fit(self):
 
         if self.search_method == 'grid':
             self.gridsearch()
@@ -158,7 +161,7 @@ class AnalyzeBoost():
             parameters = {
                     'n_estimators': self.n_estimators, 
                     'learning_rate': self.learning_rate,
-                    'max_depth': self.max_depth}
+                    self.max_depth_str: self.max_depth}
 
             self.clf.set_params(**parameters)
 
@@ -172,15 +175,14 @@ class AnalyzeBoost():
                     analysis_id=self.time_id)
 
 
-    def gridsearch(self, parameters=None, cv=5):
+    def gridsearch(self, parameters=None, cv=2):
         
         if parameters is None:
             parameters =  [
                     {'learning_rate': [1, 0.5, 0.1, 0.05, 0.01],
-                     'n_estimators': [50, 100, 150, 200]}
+                     'n_estimators': [50, 100, 150, 200],
+                     self.max_depth_str: [5, 7, 9]}
             ]
-            if self.method != 'adaboost':
-                parameters['max_depth']: [3, 5, 7, 9]
 
         self.search = GridSearchCV(self.clf, param_grid=parameters, cv=cv,
                 n_jobs=3)
@@ -191,9 +193,9 @@ class AnalyzeBoost():
         cv_results.to_csv(f'{self.time_id}-gridsearch.csv')
         report(self.search.cv_results_)
 
-        best_learning_rate = self.search.best_params_['learning_rate']
-        best_n_estimators = self.search.best_params_['n_estimators']
-        if
+        self.best_learning_rate = self.search.best_params_['learning_rate']
+        self.best_n_estimators = self.search.best_params_['n_estimators']
+        self.best_max_depth = self.search.best_params_[self.max_depth_str]
 
     
     def randomsearch(self, parameters=None, n_iter=10, cv=10):
@@ -215,7 +217,8 @@ class AnalyzeBoost():
 
     def adabooster(self):
 
-        self.clf = AdaBoostClassifier()
+        self.base_estimator = DecisionTreeClassifier()
+        self.clf = AdaBoostClassifier(base_estimator=self.base_estimator)
 
 
     def gradientbooster(self):
