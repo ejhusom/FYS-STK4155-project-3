@@ -9,6 +9,7 @@ data
 *.dat
 *.txt
 *.csv
+*.npy
 
 # doconce:
 .*_html_file_collection
@@ -72,4 +73,3 @@ temp*
 
 # vim
 Session.vim
-
