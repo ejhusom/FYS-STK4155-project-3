@@ -7,6 +7,7 @@ class ActivityData:
         self.freq = 52
         self.dir = dir
         self.n_files = n_files
+        self.data_is_loaded = False
 
     def load_data(self):
         dir_list = os.listdir(self.dir)
@@ -32,6 +33,7 @@ class ActivityData:
         for i in range(2, len(filenames)+1):
             self.data = np.concatenate((self.data, data_temp[i]), axis=0)
 
+        self.data_is_loaded = True
         print('Loading complete.')
 
 
@@ -41,6 +43,7 @@ class ActivityData:
 
         for i in range(1, 8):
             self.classes[i] = self.data[np.where(self.data[:,-1] == np.float64(i))[0],:]
+
 
 
 
@@ -87,13 +90,12 @@ class ActivityData:
                             magnitude,
                             frequency), axis=1)
 
-
         return features, targets
 
 
-
     def get_feature_matrix(self):
-        self.load_data()
+        if self.data_is_loaded == False:
+            self.load_data()
         self.split_classes()
 
 
@@ -105,4 +107,17 @@ class ActivityData:
             y = np.concatenate((y, y_temp), axis=0)
 
 
+
         return X, y.astype(int)
+
+    def output_to_csv(self, filename='activity_data_preprocessed.csv'):
+        X, y = self.get_feature_matrix()
+        df = pd.DataFrame(np.concatenate((X, y), axis=1))
+        df.to_csv(filename)
+        print('Saved data to %s' %filename)
+
+    def output_to_npy(self, filename='activity_data_preprocessed.npy'):
+        X, y = self.get_feature_matrix()
+        y = y.reshape((y.shape[0], 1))
+        np.save(filename, np.concatenate((X, y), axis=1))
+        print('Saved data to %s' %filename)
