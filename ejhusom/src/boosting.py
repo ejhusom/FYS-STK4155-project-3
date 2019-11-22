@@ -13,8 +13,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pickle
 from scipy.stats import randint as sp_randint
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import (
         train_test_split, 
         cross_validate,
@@ -155,8 +157,8 @@ class AnalyzeBoost():
 
         if self.search_method == 'grid':
             self.gridsearch()
-        elif self.search_method == 'random':
-            self.randomsearch()
+        # elif self.search_method == 'random':
+        #     self.randomsearch()
         else:
             parameters = {
                     'n_estimators': self.n_estimators, 
@@ -164,12 +166,24 @@ class AnalyzeBoost():
                     self.max_depth_str: self.max_depth}
 
             self.clf.set_params(**parameters)
-
             self.clf.fit(self.X_train, self.y_train)
-            accuracy = cross_validate(self.clf, self.X_test, self.y_test, cv=10)['test_score']
-            print(f'Accuracy: {np.around(accuracy, decimals=3)}')
 
+            # Save model
+            pickle.dump(self.clf, open(
+                self.time_id + '-' + self.method'-fit.pkl', 'wb'))
+            
+
+
+    def predict(self):
+
+        if self.search_method == 'grid':
+            pass
+        # elif self.search_method == 'random':
+        #     pass
+        else:
             self.y_pred = self.clf.predict(self.X_test)
+            accuracy = accuracy_score(self.y_pred, self.y_test)
+            print(f'Test accuracy score: {np.around(accuracy, decimals=3)}')
 
             plot_confusion_matrix(self.y_test, self.y_pred,
                     analysis_id=self.time_id)
@@ -188,6 +202,10 @@ class AnalyzeBoost():
                 n_jobs=3)
         self.search.fit(X_train, y_train)
 
+        # Save model
+        pickle.dump(self.search, open(
+            self.time_id + '-' + self.method'-search.pkl', 'wb'))
+
         # Save results from grid search and print to terminal
         cv_results = pd.DataFrame(self.search.cv_results_) 
         cv_results.to_csv(f'{self.time_id}-gridsearch.csv')
@@ -198,20 +216,21 @@ class AnalyzeBoost():
         self.best_max_depth = self.search.best_params_[self.max_depth_str]
 
     
-    def randomsearch(self, parameters=None, n_iter=10, cv=10):
+    # def randomsearch(self, parameters=None, n_iter=10, cv=10):
         
-        if parameters is None:
-            parameters =  [
-                    {'learning_rate': [1, 0.5, 0.1],#, 0.05, 0.01],
-                     'n_estimators': sp_randint(10,100)}#, 100, 150]}
-            ]
-            if self.method != 'adaboost':
-                parameters['max_depth']: [3, 5, 7, 9]
+        # TODO: Implement randomized search. The commented code does not work.
+        # if parameters is None:
+        #     parameters =  [
+        #             {'learning_rate': [1, 0.5, 0.1],#, 0.05, 0.01],
+        #              'n_estimators': sp_randint(10,100)}#, 100, 150]}
+        #     ]
+        #     if self.method != 'adaboost':
+        #         parameters['max_depth']: [3, 5, 7, 9]
 
-        self.search = RandomizedSearchCV(self.clf,
-                param_distributions=parameters, n_iter=n_iter, cv=cv)
-        self.search.fit(X_train, y_train)
-        report(self.search.cv_results_)
+        # self.search = RandomizedSearchCV(self.clf,
+        #         param_distributions=parameters, n_iter=n_iter, cv=cv)
+        # self.search.fit(X_train, y_train)
+        # report(self.search.cv_results_)
 
 
 
@@ -245,10 +264,10 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     X_train, X_test = scale_data(X_train, X_test, scaler='standard')
 
-    analysis = AnalyzeBoost(X_train, X_test, y_train, y_test,
-            method='adaboost',
-            search_method='grid')
+    # analysis = AnalyzeBoost(X_train, X_test, y_train, y_test,
+    #         method='adaboost',
+    #         search_method='grid')
 
-    # analysis = AnalyzeBoost(X_train, X_test, y_train, y_test, method='xgboost')
+    analysis = AnalyzeBoost(X_train, X_test, y_train, y_test, method='xgboost')
     # analysis = AnalyzeBoost(X_train, X_test, y_train, y_test, method='gradientboost')
     # analysis = AnalyzeBoost(X_train, X_test, y_train, y_test, method='adaboost')
