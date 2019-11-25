@@ -3,35 +3,31 @@ import os, glob
 
 class ActivityData:
 
-    def __init__(self, dir, n_files = None):
+    def __init__(self, dir, subjects = list(range(1,16))):
         self.freq = 52
         self.dir = dir
-        self.n_files = n_files
+        self.subjects = subjects
         self.data_is_loaded = False
 
     def load_data(self):
-        dir_list = os.listdir(self.dir)
-        filenames = []
-        for file in dir_list:
-            if file.endswith('.csv'):
-                filenames.append(file)
-
-        if self.n_files != None:
-            filenames = filenames[:self.n_files]
 
         data_temp = {}
 
         i = 1
-        for filename in filenames:
-            print('Loading %s ...' %filename)
-            raw_data = np.loadtxt(self.dir + filename, delimiter=',')[:, 1:]
+        for s in self.subjects:
+            print('Loading subject %i ...' %s)
+            raw_data = np.loadtxt(open(os.path.join(self.dir, str(s) + '.csv'),
+                        'rb'), delimiter=',')[:,1:]
+
             data_temp[i] = raw_data
             i += 1
 
 
         self.data = data_temp[1]
-        for i in range(2, len(filenames)+1):
-            self.data = np.concatenate((self.data, data_temp[i]), axis=0)
+        # for i in range(2, len(filenames)+1):
+        if len(self.subjects) > 1:
+            for i in range(2, len(self.subjects)+1):
+                self.data = np.concatenate((self.data, data_temp[i]), axis=0)
 
         self.data_is_loaded = True
         print('Loading complete.')
@@ -47,7 +43,7 @@ class ActivityData:
 
 
 
-    def create_features(self, which_class=5):
+    def create_features(self, which_class):
 
         n_rows_raw = self.classes[which_class].shape[0]
 
@@ -105,7 +101,6 @@ class ActivityData:
             X_temp, y_temp = self.create_features(i)
             X = np.concatenate((X, X_temp), axis=0)
             y = np.concatenate((y, y_temp), axis=0)
-
 
 
         return X, y.astype(int)
