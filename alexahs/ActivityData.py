@@ -24,7 +24,6 @@ class ActivityData:
 
 
         self.data = data_temp[1]
-        # for i in range(2, len(filenames)+1):
         if len(self.subjects) > 1:
             for i in range(2, len(self.subjects)+1):
                 self.data = np.concatenate((self.data, data_temp[i]), axis=0)
@@ -76,7 +75,7 @@ class ActivityData:
             mean_vel[i,:] = mean_vel[i-1,:] + acc_mean[i,:]*dt
 
 
-        targets = np.ones(n_rows - 1)*which_class
+        targets = np.ones((n_rows - 1, 1))*which_class
 
 
         features = np.concatenate((acc_mean,
@@ -102,8 +101,11 @@ class ActivityData:
             X = np.concatenate((X, X_temp), axis=0)
             y = np.concatenate((y, y_temp), axis=0)
 
+        temp_matrix = np.concatenate((X, y), axis=1)
+        np.random.shuffle(temp_matrix)
 
-        return X, y.astype(int)
+
+        return temp_matrix[:,:-1], temp_matrix[:,-1].astype(int)
 
     def output_to_csv(self, filename='activity_data_preprocessed.csv'):
         X, y = self.get_feature_matrix()
