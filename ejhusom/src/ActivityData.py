@@ -3,35 +3,43 @@ import os, glob
 
 class ActivityData:
 
-    def __init__(self, dir, n_files = None):
+    def __init__(self, dir, subjects = list(range(1,16))):
         self.freq = 52
         self.dir = dir
-        self.n_files = n_files
+        self.subjects = subjects
         self.data_is_loaded = False
+        self.n_targets = 8
 
     def load_data(self):
-        dir_list = os.listdir(self.dir)
-        filenames = []
-        for file in dir_list:
-            if file.endswith('.csv'):
-                filenames.append(file)
-
-        if self.n_files != None:
-            filenames = filenames[:self.n_files]
 
         data_temp = {}
 
         i = 1
-        for filename in filenames:
-            print('Loading %s ...' %filename)
-            raw_data = np.loadtxt(self.dir + filename, delimiter=',')[:, 1:]
+        for s in self.subjects:
+            print('Loading subject %i ...' %s)
+            raw_data = np.loadtxt(open(os.path.join(self.dir, str(s) + '.csv'),
+                        'rb'), delimiter=',')[:,1:]
+
+            # Simplify targets
+            if simplify:
+                self.n_targets = 4
+
+                raw_data = np.delete(raw_data[np.where(raw_data[:,-1]==2)])
+                raw_data[np.where(raw_data[:,-1]==3)] = 2
+                raw_data[np.where(raw_data[:,-1]==7)] = 2
+                raw_data[np.where(raw_data[:,-1]==4)] = 3
+                raw_data[np.where(raw_data[:,-1]==6)] = 3
+                raw_data[np.where(raw_data[:,-1]==5)] = 4
+
+
             data_temp[i] = raw_data
             i += 1
 
 
         self.data = data_temp[1]
-        for i in range(2, len(filenames)+1):
-            self.data = np.concatenate((self.data, data_temp[i]), axis=0)
+        if len(self.subjects) > 1:
+            for i in range(2, len(self.subjects)+1):
+                self.data = np.concatenate((self.data, data_temp[i]), axis=0)
 
         self.data_is_loaded = True
         print('Loading complete.')
@@ -41,13 +49,13 @@ class ActivityData:
 
         self.classes = {}
 
-        for i in range(1, 8):
+        for i in range(1, self.n_targets):
             self.classes[i] = self.data[np.where(self.data[:,-1] == np.float64(i))[0],:]
 
 
 
 
-    def create_features(self, which_class=5):
+    def create_features(self, which_class):
 
         n_rows_raw = self.classes[which_class].shape[0]
 
@@ -80,7 +88,7 @@ class ActivityData:
             mean_vel[i,:] = mean_vel[i-1,:] + acc_mean[i,:]*dt
 
 
-        targets = np.ones(n_rows - 1)*which_class
+        targets = np.ones((n_rows - 1, 1))*which_class
 
 
         features = np.concatenate((acc_mean,
@@ -101,14 +109,16 @@ class ActivityData:
 
         X, y = self.create_features(1)
 
-        for i in range(2, 8):
+        for i in range(2, self.n_targets):
             X_temp, y_temp = self.create_features(i)
             X = np.concatenate((X, X_temp), axis=0)
             y = np.concatenate((y, y_temp), axis=0)
 
+        temp_matrix = np.concatenate((X, y), axis=1)
+        np.random.shuffle(temp_matrix)
 
 
-        return X, y.astype(int)
+        return temp_matrix[:,:-1], temp_matrix[:,-1].astype(int)
 
     def output_to_csv(self, filename='activity_data_preprocessed.csv'):
         X, y = self.get_feature_matrix()
@@ -121,3 +131,5 @@ class ActivityData:
         y = y.reshape((y.shape[0], 1))
         np.save(filename, np.concatenate((X, y), axis=1))
         print('Saved data to %s' %filename)
+
+
