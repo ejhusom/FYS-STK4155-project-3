@@ -9,6 +9,23 @@
 # - AdaBoost
 # - Gradient boost
 # - XGBoost
+#
+# Dataset:
+# Labels are codified by numbers
+# 1: Working at Computer
+# 2: Standing Up, Walking and Going up\down stairs
+# 3: Standing
+# 4: Walking
+# 5: Going Up\Down Stairs
+# 6: Walking and Talking with Someone
+# 7: Talking while Standing
+#
+# Simplified targets:
+# 1: Working at computer 
+# 2: Standing (combined class 3 and 7)
+# 3: Walking (combined class 4 and 6)
+# 4: Going up/down stairs (class 5)
+# Class 2 is removed
 # ============================================================================
 import matplotlib.pyplot as plt
 import numpy as np
@@ -274,21 +291,69 @@ class AnalyzeBoost():
 
 
 if __name__ == '__main__':
+    """Analyzing boosting methods when used for human activity recognition
+    (HAR).
+
+    The program analyzes to different cases:
+
+    - Case 1: All 15 subjects are loaded in to a dataset, and then a random
+      split is performed to get training and test data.
+    - Case 2: 12 subjects are used as training data, and the remaining 3
+      subjects are used for the test set.
+
+    """
+
+
     np.random.seed(2020)
 
-    data_file = 'activity_data_preprocessed.npy'
+    try:
+        case = sys.argv[1]
+    except:
+        print('Give case number (1 or 2) as command line argument.')
+        sys.exit(1)
 
-    # Preprocess data if not already done
-    if not os.path.exists(data_file):
-        data = ActivityData(dir='data/activity/', n_files=15)
-        data.output_to_npy()
+    if case == '1':
+        """Training/test split is done on all subjects."""
 
-    data = np.load(data_file)
-    X = data[:,:-1]
-    y = data[:,-1]
+        data_file = 'activity_data_preprocessed_case1.npy'
 
-    # Split and scale
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+        # Preprocess data if not already done
+        if not os.path.exists(data_file):
+            data = ActivityData(dir='data/activity/')
+            data.output_to_npy(data_file)
+        
+        data = np.load(data_file)
+        X = data[:,:-1]
+        y = data[:,-1]
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    elif case == '2':
+        """Training and test sets contain different subjects."""
+
+        train_data_file = 'activity_data_preprocessed_case2_training.npy'
+        test_data_file = 'activity_data_preprocessed_case2_test.npy'
+
+        # Preprocess data if not already done
+        if not os.path.exists(train_data_file):
+            train_data = ActivityData(dir='data/activity/',
+                    subjects=list(range(1,13)))
+            train_data.output_to_npy(train_data_file)
+            test_data = ActivityData(dir='data/activity/',
+                    subjects=list(range(13,16)))
+            test_data.output_to_npy(test_data_file)
+        
+        train_data = np.load(train_data_file)
+        test_data = np.load(test_data_file)
+        X_train = train_data[:,:-1]
+        X_test = test_data[:,:-1]
+        y_train = train_data[:,-1]
+        y_test = test_data[:,-1]
+
+    else:
+        print('Choose case 1 or 2.')
+        sys.exit(1)
+
     X_train, X_test = scale_data(X_train, X_test, scaler='standard')
 
     analysis = AnalyzeBoost(X_train, X_test, y_train, y_test,
