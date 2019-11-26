@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
+from sklearn.tree import export_graphviz #
 from ActivityData import *
+from functions import *
 
 """
 1: Working at Computer
@@ -12,73 +13,82 @@ from ActivityData import *
 5: Going Up\Down Stairs
 6: Walking and Talking with Someone
 7: Talking while Standing
+
+1: Working at computer
+2 = 3 + 7: Standing
+3 = 4 + 6: Walking
+5: going up/down stairs
 """
 
 
 
 
-def plot_activity(dir, which_person):
-    filenames = os.listdir(dir)
-    filenames.remove('README')
-    filename = filenames[which_person]
-
-    data = np.loadtxt(dir + filename, delimiter=',')[:, 1:]
-
-
-    activities = ['working at computer',
-    'Standing Up, Walking and Going up/down stairs',
-    'standing', 'walking',
-    'Going Up/Down Stairs',
-    'Walking and Talking with Someone',
-    'Talking while Standing']
-    for i in range(7):
-
-
-        inds = np.where(data[:,-1] == i+1)[0]
-
-        x, y, z = data[inds, 0], data[inds, 1], data[inds, 2]
-
-        n = range(len(x))
-
-        plt.scatter(n, x, label='x', s=1)
-        plt.scatter(n, y, label='y', s=1)
-        plt.scatter(n, z, label='z', s=1)
-        plt.legend()
-        plt.title(activities[i])
-        plt.show()
-
-
 
 def main():
+    # """
+    #preprocess data
     dir = "data/activity/"
-    # filenames = os.listdir(dir)
-    # filenames.remove('README')
-    # filename = filenames[0]
 
-
-    # data = np.loadtxt(dir + filename, delimiter=',')[:, 1:]
-
-    data = ActivityData(dir)
-    X, y = data.get_feature_matrix()
-
-    print(X.shape)
-    print(y.shape)
-
-
-    # dat = ActivityData(data)
-    # act.split_and_join()
-    # act.get_window_indices()
-    # print(aData.joined_data)
-    # act.create_features()
-
-    # n_rows, rows_per_activity, rows_downsamp =  get_downsample_size(data)
-
-    # X, y = load_activity_data(dir, which_person=0)
-    # test_voting()
+    # data = ActivityData(dir)
+    # X, y = data.get_feature_matrix()
 
 
 
-    # plot_activity(dir, 0)
+    data_train = ActivityData(dir, list(range(1, 13)))
+    data_train.output_to_npy('data/activity_train.npy')
+    data_test = ActivityData(dir, list(range(13, 16)))
+    data_test.output_to_npy('data/activity_test.npy')
+    # """
+
+
+    data_train = np.load('data/activity_train.npy')
+    data_test = np.load('data/activity_test.npy')
+
+
+    X_train, y_train = data_train[:,:-1], data_train[:,-1]
+    X_test, y_test = data_test[:,:-1], data_test[:,-1]
+
+
+    # data = np.load('data/activity_data_full_preprocessed.npy')
+    # X, y = data[:,:-1], data[:,-1]
+    # X_train, X_test, y_train, y_test = skl.model_selection.train_test_split(X, y, test_size=0.2)
+
+    scaler = skl.preprocessing.StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
+
+
+
+    #single tree
+    # """
+    param_name = 'max_depth'
+    param_range = range(2, 20)
+
+    analyze_simple_tree(X_train, X_test, y_train, y_test, param_name, param_range, x_label='Tree depth')
+    # """
+    #trees
+    """
+    parameters = [
+        {'criterion': ['entropy'], 'n_estimators': [100, 150, 200], 'max_depth': [3, 5, 7, 9, 11]},
+        # {'criterion': ['gini'], 'n_estimators': [10, 50, 100, 150], 'max_depth': [3, 5, 7]},
+    ]
+
+    analyze_trees(X_train, X_test, y_train, y_test, parameters, plotting=True, save_to_file=False, n_jobs=-1)
+    """
+
+
+
+    # validation_curve(model, X_train, y_train, 'n_estimators', param_range=range(1, 400, 50))
+
+
+    # model.fit(X_train, y_train)
+    # y_pred = model.predict(X_test)
+
+
+
+
+
 
 
 def test_voting():
