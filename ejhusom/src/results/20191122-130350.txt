@@ -1,0 +1,23 @@
+-----------------------
+Time: 20191122-130351
+Number of training samples: 4308
+Number of test samples: 1078
+Method: xgboost
+Model with rank: 1
+Mean validation score: 0.963 (std: 0.006)
+Parameters: {'learning_rate': 0.5, 'max_depth': 5, 'n_estimators': 150}
+
+Model with rank: 2
+Mean validation score: 0.963 (std: 0.007)
+Parameters: {'learning_rate': 0.5, 'max_depth': 5, 'n_estimators': 50}
+
+Model with rank: 3
+Mean validation score: 0.963 (std: 0.006)
+Parameters: {'learning_rate': 0.5, 'max_depth': 5, 'n_estimators': 100}
+
+Test accuracy score: 0.983
+Mean accuracy score: 0.9833024118738405
+
+real	1m1,671s
+user	1m50,287s
+sys	0m1,055s

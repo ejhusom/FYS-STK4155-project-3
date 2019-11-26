@@ -1,0 +1,11 @@
+Case 2: Separate subjects in test data.
+-----------------------
+Time: 20191126-115549
+Number of training samples: 61330
+Number of test samples: 10774
+Method: gradientboost
+Test accuracy score: 0.379
+
+real	0m24,420s
+user	0m40,220s
+sys	0m1,720s

@@ -1,0 +1,7 @@
+Case 1: All subjects mixed.
+-----------------------
+Time: 20191126-141501
+Number of training samples: 59158
+Number of test samples: 14790
+Method: adaboost
+Fitting 5 folds for each of 45 candidates, totalling 225 fits

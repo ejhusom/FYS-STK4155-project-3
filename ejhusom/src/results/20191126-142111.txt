@@ -1,0 +1,9 @@
+Case 1: All subjects mixed.
+-----------------------
+Time: 20191126-142114
+Number of training samples: 59158
+Number of test samples: 14790
+Method: gradientboost
+Grid search setup done.
+Starting fit...
+Fitting 5 folds for each of 36 candidates, totalling 180 fits

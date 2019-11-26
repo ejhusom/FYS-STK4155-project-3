@@ -1,0 +1,49 @@
+Case 1: All subjects mixed.
+Loading subject 1 ...
+Loading subject 2 ...
+Loading subject 3 ...
+Loading subject 4 ...
+Loading subject 5 ...
+Loading subject 6 ...
+Loading subject 7 ...
+Loading subject 8 ...
+Loading subject 9 ...
+Loading subject 10 ...
+Loading subject 11 ...
+Loading subject 12 ...
+Loading subject 13 ...
+Loading subject 14 ...
+Loading subject 15 ...
+Loading complete.
+Saved data to activity_data_preprocessed_case1.npy
+-----------------------
+Time: 20191126-122326
+Number of training samples: 59158
+Number of test samples: 14790
+Method: adaboost
+Traceback (most recent call last):
+  File "./boosting.py", line 375, in <module>
+    analysis.fit()
+  File "./boosting.py", line 275, in gridsearch
+    
+  File "/home/ejhusom/anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py", line 688, in fit
+    self._run_search(evaluate_candidates)
+  File "/home/ejhusom/anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py", line 1149, in _run_search
+    evaluate_candidates(ParameterGrid(self.param_grid))
+  File "/home/ejhusom/anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py", line 667, in evaluate_candidates
+    cv.split(X, y, groups)))
+  File "/home/ejhusom/anaconda3/lib/python3.7/site-packages/joblib/parallel.py", line 934, in __call__
+    self.retrieve()
+  File "/home/ejhusom/anaconda3/lib/python3.7/site-packages/joblib/parallel.py", line 833, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/home/ejhusom/anaconda3/lib/python3.7/site-packages/joblib/_parallel_backends.py", line 521, in wrap_future_result
+    return future.result(timeout=timeout)
+  File "/home/ejhusom/anaconda3/lib/python3.7/concurrent/futures/_base.py", line 430, in result
+    self._condition.wait(timeout)
+  File "/home/ejhusom/anaconda3/lib/python3.7/threading.py", line 296, in wait
+    waiter.acquire()
+KeyboardInterrupt
+
+real	105m29,902s
+user	305m17,803s
+sys	0m30,161s

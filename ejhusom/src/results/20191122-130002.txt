@@ -1,0 +1,23 @@
+-----------------------
+Time: 20191122-130003
+Number of training samples: 4308
+Number of test samples: 1078
+Method: adaboost
+Model with rank: 1
+Mean validation score: 0.964 (std: 0.001)
+Parameters: {'base_estimator__max_depth': 7, 'learning_rate': 1, 'n_estimators': 100}
+
+Model with rank: 2
+Mean validation score: 0.963 (std: 0.000)
+Parameters: {'base_estimator__max_depth': 7, 'learning_rate': 0.5, 'n_estimators': 50}
+
+Model with rank: 3
+Mean validation score: 0.963 (std: 0.004)
+Parameters: {'base_estimator__max_depth': 7, 'learning_rate': 0.5, 'n_estimators': 100}
+
+Test accuracy score: 0.978
+Mean accuracy score: 0.9777365491651205
+
+real	0m31,383s
+user	0m55,069s
+sys	0m0,807s

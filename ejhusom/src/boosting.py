@@ -117,7 +117,7 @@ def plot_confusion_matrix(y_test, y_pred, analysis_id=None):
         analysis_id = time.strftime('%Y%m%d-%H%M')
     plt.savefig(analysis_id + '-confusionmatrix.pdf')
 
-    plt.show()
+    # plt.show()
 
 
 def report(results, n_top=3):

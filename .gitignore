@@ -5,11 +5,11 @@ build*
 *.a
 
 # data-files
-data
-*.dat
-*.txt
-*.csv
-*.npy
+# data
+# *.dat
+# *.txt
+# *.csv
+# *.npy
 
 # doconce:
 .*_html_file_collection

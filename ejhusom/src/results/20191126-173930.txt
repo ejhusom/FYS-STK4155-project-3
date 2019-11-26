@@ -1,0 +1,393 @@
+Script started on 2019-11-26 17:39:26+0100
+]0;ejhusom@DELL: ~/GitHub/FYS-STK4155-project-3/ejhusom/src[01;32mejhusom@DELL[00m:[01;34m~/GitHub/FYS-STK4155-project-3/ejhusom/src[00m$ ./boosting.py 1 adaboost
+Case 1: All subjects mixed.
+-----------------------
+Time: 20191126-173933
+Number of training samples: 59158
+Number of test samples: 14790
+Method: adaboost
+Fitting 5 folds for each of 36 candidates, totalling 180 fits
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 4 concurrent workers.
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=100 ..
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=100 ..
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=100 ..
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=100, score=(train=0.723, test=0.709), total= 1.9min
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=100, score=(train=0.735, test=0.725), total= 1.9min
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=100, score=(train=0.735, test=0.733), total= 1.9min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=100 ..
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=150 ..
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=100, score=(train=0.718, test=0.709), total= 1.9min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=100, score=(train=0.629, test=0.624), total= 2.2min
+[Parallel(n_jobs=-1)]: Done   5 tasks      | elapsed:  4.3min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=150, score=(train=0.746, test=0.734), total= 3.4min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=150, score=(train=0.757, test=0.749), total= 3.4min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=150, score=(train=0.702, test=0.690), total= 3.4min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=150, score=(train=0.731, test=0.724), total= 3.5min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=150, score=(train=0.719, test=0.713), total= 3.5min
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=200, score=(train=0.727, test=0.707), total= 4.7min
+/home/ejhusom/anaconda3/lib/python3.7/site-packages/joblib/externals/loky/process_executor.py:706: UserWarning: A worker stopped while some jobs were given to the executor. This can be caused by a too short worker timeout or by a memory leak.
+  "timeout or by a memory leak.", UserWarning
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=200, score=(train=0.735, test=0.728), total= 4.7min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100 
+[CV] base_estimator__max_depth=5, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=200, score=(train=0.773, test=0.758), total= 4.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100, score=(train=0.732, test=0.724), total= 2.5min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=200, score=(train=0.727, test=0.717), total= 4.9min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100, score=(train=0.753, test=0.743), total= 2.5min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=1, n_estimators=200, score=(train=0.718, test=0.709), total= 4.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100, score=(train=0.718, test=0.705), total= 2.5min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100, score=(train=0.727, test=0.713), total= 2.5min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=100, score=(train=0.705, test=0.698), total= 2.5min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150, score=(train=0.715, test=0.709), total= 3.7min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150, score=(train=0.739, test=0.723), total= 3.7min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150, score=(train=0.760, test=0.745), total= 3.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150, score=(train=0.759, test=0.753), total= 3.7min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=150, score=(train=0.699, test=0.689), total= 3.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200, score=(train=0.735, test=0.727), total= 5.0min
+[CV] base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200, score=(train=0.720, test=0.710), total= 5.1min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200, score=(train=0.729, test=0.713), total= 5.1min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200, score=(train=0.686, test=0.674), total= 5.0min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100, score=(train=0.686, test=0.681), total= 2.6min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100, score=(train=0.720, test=0.714), total= 2.6min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=5, learning_rate=0.5, n_estimators=200, score=(train=0.748, test=0.741), total= 5.1min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100, score=(train=0.764, test=0.749), total= 2.5min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100, score=(train=0.758, test=0.754), total= 2.6min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=100, score=(train=0.691, test=0.688), total= 2.5min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150, score=(train=0.719, test=0.717), total= 3.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150, score=(train=0.699, test=0.693), total= 3.9min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150, score=(train=0.761, test=0.744), total= 3.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150, score=(train=0.754, test=0.747), total= 3.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=150, score=(train=0.655, test=0.650), total= 3.8min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200, score=(train=0.697, test=0.690), total= 5.1min
+[CV] base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200, score=(train=0.724, test=0.719), total= 5.1min
+[Parallel(n_jobs=-1)]: Done  42 tasks      | elapsed: 39.9min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200, score=(train=0.732, test=0.718), total= 5.0min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200, score=(train=0.713, test=0.708), total= 5.0min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=100, score=(train=0.935, test=0.920), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=100, score=(train=0.933, test=0.916), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=5, learning_rate=0.1, n_estimators=200, score=(train=0.723, test=0.721), total= 5.2min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=100, score=(train=0.932, test=0.913), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=100, score=(train=0.911, test=0.896), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=100, score=(train=0.910, test=0.903), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=150, score=(train=0.949, test=0.933), total= 5.0min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=150, score=(train=0.956, test=0.941), total= 5.0min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=150, score=(train=0.943, test=0.926), total= 5.0min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=150, score=(train=0.954, test=0.937), total= 5.0min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=150, score=(train=0.911, test=0.900), total= 5.0min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=200, score=(train=0.968, test=0.952), total= 6.5min
+[CV] base_estimator__max_depth=7, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=200, score=(train=0.958, test=0.942), total= 6.6min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=200, score=(train=0.953, test=0.937), total= 6.5min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=200, score=(train=0.960, test=0.941), total= 6.6min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100, score=(train=0.918, test=0.904), total= 3.5min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100, score=(train=0.936, test=0.918), total= 3.5min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=1, n_estimators=200, score=(train=0.936, test=0.925), total= 6.7min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100, score=(train=0.926, test=0.907), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100, score=(train=0.925, test=0.907), total= 3.5min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=100, score=(train=0.948, test=0.939), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150, score=(train=0.934, test=0.921), total= 5.2min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150, score=(train=0.966, test=0.952), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150, score=(train=0.969, test=0.952), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150, score=(train=0.962, test=0.946), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=150, score=(train=0.932, test=0.922), total= 5.3min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200, score=(train=0.963, test=0.951), total= 6.8min
+[CV] base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200, score=(train=0.959, test=0.947), total= 6.8min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200, score=(train=0.967, test=0.951), total= 6.8min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100, score=(train=0.903, test=0.887), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200, score=(train=0.958, test=0.944), total= 6.8min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100, score=(train=0.961, test=0.948), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=7, learning_rate=0.5, n_estimators=200, score=(train=0.958, test=0.948), total= 6.9min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100, score=(train=0.919, test=0.903), total= 3.5min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100, score=(train=0.952, test=0.935), total= 3.5min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=100, score=(train=0.958, test=0.947), total= 3.4min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150, score=(train=0.870, test=0.858), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150, score=(train=0.966, test=0.954), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150, score=(train=0.951, test=0.935), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150, score=(train=0.961, test=0.946), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=150, score=(train=0.948, test=0.932), total= 5.1min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200, score=(train=0.945, test=0.931), total= 6.8min
+[CV] base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200, score=(train=0.955, test=0.943), total= 6.9min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200, score=(train=0.953, test=0.938), total= 6.9min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=100, score=(train=0.993, test=0.980), total= 4.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200, score=(train=0.967, test=0.951), total= 6.8min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=100, score=(train=0.994, test=0.981), total= 4.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=100 ..
+[CV]  base_estimator__max_depth=7, learning_rate=0.1, n_estimators=200, score=(train=0.974, test=0.962), total= 6.8min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=100, score=(train=0.995, test=0.983), total= 4.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=100, score=(train=0.996, test=0.985), total= 4.0min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=100, score=(train=0.994, test=0.980), total= 4.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=150, score=(train=0.996, test=0.983), total= 6.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=150 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=150, score=(train=0.998, test=0.986), total= 6.0min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=150, score=(train=0.996, test=0.983), total= 6.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=150, score=(train=0.995, test=0.981), total= 6.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=150, score=(train=0.994, test=0.981), total= 6.1min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=200, score=(train=0.998, test=0.986), total= 8.0min
+[CV] base_estimator__max_depth=9, learning_rate=1, n_estimators=200 ..
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=200, score=(train=0.998, test=0.986), total= 8.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=200, score=(train=0.997, test=0.983), total= 8.1min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=200, score=(train=0.998, test=0.987), total= 8.1min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100, score=(train=0.997, test=0.985), total= 4.2min
+[Parallel(n_jobs=-1)]: Done 105 tasks      | elapsed: 124.4min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100, score=(train=0.997, test=0.985), total= 4.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=1, n_estimators=200, score=(train=0.997, test=0.983), total= 8.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100, score=(train=0.999, test=0.986), total= 4.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100, score=(train=0.998, test=0.985), total= 4.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=100, score=(train=0.998, test=0.986), total= 4.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150, score=(train=1.000, test=0.990), total= 6.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150, score=(train=1.000, test=0.987), total= 6.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150, score=(train=0.998, test=0.985), total= 6.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150, score=(train=0.999, test=0.986), total= 6.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=150, score=(train=0.999, test=0.985), total= 6.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.990), total= 8.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.988), total= 8.1min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.988), total= 8.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100, score=(train=0.999, test=0.986), total= 4.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100, score=(train=0.999, test=0.986), total= 4.1min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200, score=(train=0.999, test=0.986), total= 8.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100, score=(train=1.000, test=0.986), total= 4.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.5, n_estimators=200, score=(train=0.999, test=0.987), total= 8.5min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100, score=(train=0.998, test=0.980), total= 4.2min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=100, score=(train=1.000, test=0.989), total= 4.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150, score=(train=1.000, test=0.989), total= 6.4min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150, score=(train=0.999, test=0.985), total= 6.4min
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150, score=(train=0.999, test=0.988), total= 6.4min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200 
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150, score=(train=0.998, test=0.987), total= 6.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=150, score=(train=1.000, test=0.988), total= 6.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.987), total= 8.3min
+[CV] base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.988), total= 8.5min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=100 .
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.985), total= 8.3min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=100 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=100, score=(train=1.000, test=0.990), total= 4.6min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=100 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=100, score=(train=1.000, test=0.987), total= 4.5min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=100 .
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.986), total= 8.4min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=100 .
+[CV]  base_estimator__max_depth=9, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.989), total= 8.4min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=150 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=100, score=(train=1.000, test=0.988), total= 4.7min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=150 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=100, score=(train=1.000, test=0.989), total= 4.7min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=150 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=100, score=(train=1.000, test=0.989), total= 4.5min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=150 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=150, score=(train=1.000, test=0.989), total= 6.9min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=150 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=150, score=(train=1.000, test=0.988), total= 6.9min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=200 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=150, score=(train=1.000, test=0.989), total= 6.8min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=200 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=150, score=(train=1.000, test=0.988), total= 6.9min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=200 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=150, score=(train=1.000, test=0.990), total= 6.9min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=200 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=200, score=(train=1.000, test=0.991), total= 9.0min
+[CV] base_estimator__max_depth=11, learning_rate=1, n_estimators=200 .
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=200, score=(train=1.000, test=0.989), total= 9.0min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=200, score=(train=1.000, test=0.989), total= 9.1min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=200, score=(train=1.000, test=0.989), total= 9.0min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100, score=(train=1.000, test=0.990), total= 4.8min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100, score=(train=1.000, test=0.989), total= 4.8min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=1, n_estimators=200, score=(train=1.000, test=0.991), total= 9.2min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100, score=(train=1.000, test=0.988), total= 4.8min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100, score=(train=1.000, test=0.987), total= 4.8min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=100, score=(train=1.000, test=0.989), total= 4.8min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150, score=(train=1.000, test=0.987), total= 7.6min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150, score=(train=1.000, test=0.988), total= 7.6min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150, score=(train=1.000, test=0.990), total= 7.5min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150, score=(train=1.000, test=0.989), total= 7.4min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=150, score=(train=1.000, test=0.987), total= 7.0min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.991), total= 9.3min
+[CV] base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.990), total= 9.2min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.990), total= 9.3min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100, score=(train=1.000, test=0.991), total= 4.7min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100, score=(train=1.000, test=0.987), total= 4.7min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.989), total= 9.5min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100 
+[CV]  base_estimator__max_depth=11, learning_rate=0.5, n_estimators=200, score=(train=1.000, test=0.989), total= 9.4min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100, score=(train=1.000, test=0.990), total= 4.8min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100, score=(train=1.000, test=0.990), total= 4.8min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=100, score=(train=1.000, test=0.990), total= 4.9min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150, score=(train=1.000, test=0.989), total= 7.1min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150, score=(train=1.000, test=0.990), total= 7.1min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150, score=(train=1.000, test=0.988), total= 7.2min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150, score=(train=1.000, test=0.990), total= 7.2min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=150, score=(train=1.000, test=0.991), total= 7.1min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.989), total= 9.6min
+[CV] base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200 
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.988), total= 9.4min
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.990), total= 9.4min
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.990), total= 7.3min
+[CV]  base_estimator__max_depth=11, learning_rate=0.1, n_estimators=200, score=(train=1.000, test=0.992), total= 5.9min
+[Parallel(n_jobs=-1)]: Done 180 out of 180 | elapsed: 252.8min finished
+Model with rank: 1
+Mean validation score: 0.990 (std: 0.001)
+Parameters: {'base_estimator__max_depth': 11, 'learning_rate': 1, 'n_estimators': 200}
+
+Model with rank: 2
+Mean validation score: 0.990 (std: 0.001)
+Parameters: {'base_estimator__max_depth': 11, 'learning_rate': 0.1, 'n_estimators': 150}
+
+Model with rank: 3
+Mean validation score: 0.990 (std: 0.001)
+Parameters: {'base_estimator__max_depth': 11, 'learning_rate': 0.5, 'n_estimators': 200}
+
+Test accuracy score: 0.991
+]0;ejhusom@DELL: ~/GitHub/FYS-STK4155-project-3/ejhusom/src[01;32mejhusom@DELL[00m:[01;34m~/GitHub/FYS-STK4155-project-3/ejhusom/src[00m$ x
+exit
+
+Script done on 2019-11-26 22:04:13+0100

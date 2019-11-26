@@ -1,0 +1,6 @@
+Case 1: All subjects mixed.
+-----------------------
+Time: 20191126-221711
+Number of training samples: 59158
+Number of test samples: 14790
+Method: adaboost

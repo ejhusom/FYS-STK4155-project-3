@@ -1,0 +1,31 @@
+------------------------------
+Subject 1 loaded.
+Number of samples: 162501
+Target 1: 33677 samples
+Target 2: 928 samples
+Target 3: 11179 samples
+Target 4: 26860 samples
+Target 5: 3191 samples
+Target 6: 2917 samples
+Target 7: 83748 samples
+Number of zero rows removed: 1
+------------------------------
+Complete data set:
+Target 1: 33677 samples
+Target 2: 928 samples
+Target 3: 11179 samples
+Target 4: 26860 samples
+Target 5: 3191 samples
+Target 6: 2917 samples
+Target 7: 83748 samples
+-----------------------
+Time: 20191121-125022
+Number of training samples: 2500
+Number of test samples: 625
+Scaled: True
+Method: xgboost
+Accuracy: [0.892 0.891 0.859 0.875 0.875 0.919 0.903 0.867 0.867 0.883]
+
+real	0m9,027s
+user	0m6,269s
+sys	0m0,396s
