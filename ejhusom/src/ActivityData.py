@@ -1,14 +1,16 @@
 import numpy as np
+import pandas as pd
 import os, glob
 
 class ActivityData:
 
-    def __init__(self, dir, subjects = list(range(1,16))):
+    def __init__(self, dir, subjects = list(range(1,16)), simplify=False):
         self.freq = 52
         self.dir = dir
         self.subjects = subjects
         self.data_is_loaded = False
-        self.n_targets = 8
+        self.n_targets = 7
+        self.simplify = simplify
 
     def load_data(self):
 
@@ -21,16 +23,16 @@ class ActivityData:
                         'rb'), delimiter=',')[:,1:]
 
             # Simplify targets
-            if simplify:
+            if self.simplify:
                 self.n_targets = 4
 
-                raw_data = np.delete(raw_data[np.where(raw_data[:,-1]==2)])
-                raw_data[np.where(raw_data[:,-1]==3)] = 2
-                raw_data[np.where(raw_data[:,-1]==7)] = 2
-                raw_data[np.where(raw_data[:,-1]==4)] = 3
-                raw_data[np.where(raw_data[:,-1]==6)] = 3
-                raw_data[np.where(raw_data[:,-1]==5)] = 4
-
+                raw_data = np.delete(raw_data, np.where(raw_data[:,-1]==2)[0],
+                        axis=0)
+                raw_data[np.where(raw_data[:,-1]==3)[0],-1] = 2
+                raw_data[np.where(raw_data[:,-1]==7)[0],-1] = 2
+                raw_data[np.where(raw_data[:,-1]==4)[0],-1] = 3
+                raw_data[np.where(raw_data[:,-1]==6)[0],-1] = 3
+                raw_data[np.where(raw_data[:,-1]==5)[0],-1] = 4
 
             data_temp[i] = raw_data
             i += 1
@@ -49,7 +51,7 @@ class ActivityData:
 
         self.classes = {}
 
-        for i in range(1, self.n_targets):
+        for i in range(1, self.n_targets+1):
             self.classes[i] = self.data[np.where(self.data[:,-1] == np.float64(i))[0],:]
 
 
@@ -96,7 +98,8 @@ class ActivityData:
                             minmax,
                             mean_vel,
                             magnitude,
-                            frequency), axis=1)
+                            frequency
+                            ), axis=1)
 
         return features, targets
 
@@ -109,7 +112,7 @@ class ActivityData:
 
         X, y = self.create_features(1)
 
-        for i in range(2, self.n_targets):
+        for i in range(2, self.n_targets+1):
             X_temp, y_temp = self.create_features(i)
             X = np.concatenate((X, X_temp), axis=0)
             y = np.concatenate((y, y_temp), axis=0)

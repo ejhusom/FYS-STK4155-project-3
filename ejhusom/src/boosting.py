@@ -10,8 +10,7 @@
 # - Gradient boost
 # - XGBoost
 #
-# Dataset:
-# Labels are codified by numbers
+# Dataset: # Labels are codified by numbers
 # 1: Working at Computer
 # 2: Standing Up, Walking and Going up\down stairs
 # 3: Standing
@@ -26,6 +25,10 @@
 # 3: Walking (combined class 4 and 6)
 # 4: Going up/down stairs (class 5)
 # Class 2 is removed
+#
+# Most simple targets:
+# 1: Inactive
+# 2: Active
 # ============================================================================
 import matplotlib.pyplot as plt
 import numpy as np
@@ -127,12 +130,25 @@ def report(results, n_top=3):
     for i in range(1, n_top + 1):
         candidates = np.flatnonzero(results['rank_test_score'] == i)
         for candidate in candidates:
-            print("Model with rank: {0}".format(i))
-            print("Mean validation score: {0:.3f} (std: {1:.3f})".format(
+            fprint("Model with rank: {0}".format(i))
+            fprint("Mean validation score: {0:.3f} (std: {1:.3f})".format(
                   results['mean_test_score'][candidate],
                   results['std_test_score'][candidate]))
-            print("Parameters: {0}".format(results['params'][candidate]))
-            print("")
+            fprint("Parameters: {0}".format(results['params'][candidate]))
+            fprint("")
+
+
+def fprint(output, filename='output.txt'):
+    
+    try:
+        filename = FILENAME
+    except:
+        pass
+
+    print(output)
+    with open(filename, 'a') as f:
+        f.write('{}\n'.format(output))
+
 
 
 class AnalyzeBoost():
@@ -176,7 +192,9 @@ class AnalyzeBoost():
             n_estimators=100,
             learning_rate=0.5,
             max_depth=3,
-            verbose=True):
+            verbose=True,
+            time_id=time.strftime('%Y%m%d-%H%M&S')
+            ):
 
 
         self.X_train = X_train
@@ -190,15 +208,14 @@ class AnalyzeBoost():
         self.learning_rate = learning_rate
         self.max_depth = max_depth
         self.verbose = verbose
-
-        self.time_id = time.strftime('%Y%m%d-%H%M%S')
+        self.time_id = time_id
 
         if self.verbose:
-            print('-----------------------')
-            print(f'Time: {self.time_id}')
-            print(f'Number of training samples: {np.shape(self.X_train)[0]}')
-            print(f'Number of test samples: {np.shape(self.X_test)[0]}')
-            print(f'Method: {method}')
+            fprint('-----------------------')
+            fprint(f'Time: {self.time_id}')
+            fprint(f'Number of training samples: {np.shape(self.X_train)[0]}')
+            fprint(f'Number of test samples: {np.shape(self.X_test)[0]}')
+            fprint(f'Method: {method}')
 
 
         if self.method == 'adaboost':
@@ -236,13 +253,13 @@ class AnalyzeBoost():
 
         self.y_pred = self.clf.predict(self.X_test)
         accuracy = accuracy_score(self.y_pred, self.y_test)
-        print(f'Test accuracy score: {np.around(accuracy, decimals=3)}')
+        fprint(f'Test accuracy score: {np.around(accuracy, decimals=3)}')
 
         plot_confusion_matrix(self.y_test, self.y_pred,
                 analysis_id=self.time_id)
 
 
-    def gridsearch(self, parameters=None, cv=2, load_search=None):
+    def gridsearch(self, parameters=None, cv=5, load_search=None):
         """Performing a grid search for optimal parameters.
 
         Parameters
@@ -261,14 +278,14 @@ class AnalyzeBoost():
         if load_search is None:
             if parameters is None:
                 parameters =  [
-                        {'learning_rate': [1, 0.5],
+                        {'learning_rate': [1, 0.5, 0.1],
                          'n_estimators': [100, 150, 200],
-                         self.max_depth_str: [5, 7]}
+                         self.max_depth_str: [5, 7, 9, 11]}
                 ]
 
             self.search = GridSearchCV(self.clf, param_grid=parameters, cv=cv,
-                    n_jobs=3)
-            self.search.fit(X_train, y_train)
+                    n_jobs=-1, verbose=6, return_train_score=True)
+            self.search.fit(self.X_train, self.y_train)
 
             # Save model
             pickle.dump(self.search, open(
@@ -305,15 +322,22 @@ if __name__ == '__main__':
 
 
     np.random.seed(2020)
+    TIME_ID = time.strftime('%Y%m%d-%H%M%S')
+    FILENAME = 'results/' + TIME_ID + '.txt'
 
     try:
         case = sys.argv[1]
+        method = sys.argv[2]
     except:
-        print('Give case number (1 or 2) as command line argument.')
+        print('Give command line arguments:')
+        print('1. Case number (1 or 2)')
+        print('2. Boosting method')
         sys.exit(1)
 
     if case == '1':
         """Training/test split is done on all subjects."""
+
+        fprint('Case 1: All subjects mixed.')
 
         data_file = 'activity_data_preprocessed_case1.npy'
 
@@ -330,12 +354,13 @@ if __name__ == '__main__':
 
     elif case == '2':
         """Training and test sets contain different subjects."""
+        fprint('Case 2: Separate subjects in test data.')
 
         train_data_file = 'activity_data_preprocessed_case2_training.npy'
         test_data_file = 'activity_data_preprocessed_case2_test.npy'
 
         # Preprocess data if not already done
-        if not os.path.exists(train_data_file):
+        if not os.path.exists(test_data_file):
             train_data = ActivityData(dir='data/activity/',
                     subjects=list(range(1,13)))
             train_data.output_to_npy(train_data_file)
@@ -357,16 +382,13 @@ if __name__ == '__main__':
     X_train, X_test = scale_data(X_train, X_test, scaler='standard')
 
     analysis = AnalyzeBoost(X_train, X_test, y_train, y_test,
-            method='xgboost',
-            n_estimators=150,
+            method=method,
+            n_estimators=100,
             learning_rate=0.5,
-            max_depth=5)
+            max_depth=2,
+            time_id=TIME_ID)
 
-    # analysis.gridsearch()
+    analysis.gridsearch()
     analysis.fit()
     analysis.predict()
 
-    # analysis = AnalyzeBoost(X_train, X_test, y_train, y_test, method='xgboost')
-    # analysis.fit()
-    # analysis = AnalyzeBoost(X_train, X_test, y_train, y_test, method='gradientboost')
-    # analysis = AnalyzeBoost(X_train, X_test, y_train, y_test, method='adaboost')

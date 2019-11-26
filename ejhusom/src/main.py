@@ -1,14 +1,7 @@
-#!/usr/bin/env python3
-# ============================================================================
-# File:     main.py
-# Created:  2019-11-20
-# ----------------------------------------------------------------------------
-# Description:
-# Program for analyze machine learning methods in FYS-STK4155 at UiO, fall
-# 2019.
-# ============================================================================
-from boosting import *
+Script started on 2019-11-26 14:47:20+0100
+Python 3.7.4 (default, Aug 13 2019, 20:35:49) 
+[GCC 7.3.0] :: Anaconda, Inc. on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> quit()
 
-np.random.seed(2020)
-
-
+Script done on 2019-11-26 14:47:30+0100
