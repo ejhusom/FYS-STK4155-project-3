@@ -1,0 +1,19 @@
+Case 2: Separate subjects in test data.
+-----------------------
+Time: 20191127-160843
+Number of training samples: 62898
+Number of test samples: 11028
+Method: adaboost
+Model with rank: 1
+Mean validation score: 0.992 (std: 0.001)
+Parameters: {'base_estimator__max_depth': 11, 'learning_rate': 1, 'n_estimators': 200}
+
+Model with rank: 2
+Mean validation score: 0.992 (std: 0.001)
+Parameters: {'base_estimator__max_depth': 11, 'learning_rate': 1, 'n_estimators': 150}
+
+Model with rank: 3
+Mean validation score: 0.992 (std: 0.001)
+Parameters: {'base_estimator__max_depth': 11, 'learning_rate': 0.1, 'n_estimators': 100}
+
+Test accuracy score: 0.135
