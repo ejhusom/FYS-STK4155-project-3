@@ -1,0 +1,7 @@
+Case 3: Experimental case.
+-----------------------
+Time: 20191127-134015
+Number of training samples: 16618
+Number of test samples: 3526
+Method: adaboost
+Test accuracy score: 0.184

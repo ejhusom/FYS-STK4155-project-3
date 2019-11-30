@@ -375,6 +375,43 @@ if __name__ == '__main__':
         y_train = train_data[:,-1]
         y_test = test_data[:,-1]
 
+    elif case == '3':
+        """Training and test sets contain different subjects."""
+        fprint('Case 3: Experimental case.')
+
+        train_data_file = 'activity_data_preprocessed_case3_training.npy'
+        test_data_file = 'activity_data_preprocessed_case3_test.npy'
+
+        # Preprocess data if not already done
+        if not os.path.exists(test_data_file):
+            train_data = ActivityData(dir='data/activity2/',
+                    subjects=list(range(1,4)))
+            train_data.output_to_npy(train_data_file)
+            test_data = ActivityData(dir='data/activity2/',
+                    subjects=list(range(4,5)))
+            test_data.output_to_npy(test_data_file)
+        
+        train_data = np.load(train_data_file)
+        test_data = np.load(test_data_file)
+        X_train = train_data[:,:-1]
+        X_test = test_data[:,:-1]
+        y_train = train_data[:,-1]
+        y_test = test_data[:,-1]
+
+        # data_file = 'activity_data_preprocessed_case3.npy'
+
+        # # Preprocess data if not already done
+        # if not os.path.exists(data_file):
+        #     data = ActivityData(dir='data/activity2/',
+        #             subjects=list(range(1,5)))
+        #     data.output_to_npy(data_file)
+        
+        # data = np.load(data_file)
+        # X = data[:,:-1]
+        # y = data[:,-1]
+
+        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
     else:
         print('Choose case 1 or 2.')
         sys.exit(1)
@@ -383,12 +420,12 @@ if __name__ == '__main__':
 
     analysis = AnalyzeBoost(X_train, X_test, y_train, y_test,
             method=method,
-            n_estimators=100,
+            n_estimators=150,
             learning_rate=0.5,
-            max_depth=2,
+            max_depth=3,
             time_id=TIME_ID)
 
-    analysis.gridsearch()
+    # analysis.gridsearch()
     analysis.fit()
     analysis.predict()
 
