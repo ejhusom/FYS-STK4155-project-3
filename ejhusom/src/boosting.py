@@ -20,7 +20,7 @@
 # 7: Talking while Standing
 #
 # Simplified targets:
-# 1: Working at computer 
+# 1: Working at computer
 # 2: Standing (combined class 3 and 7)
 # 3: Walking (combined class 4 and 6)
 # 4: Going up/down stairs (class 5)
@@ -31,6 +31,8 @@
 # 2: Active
 # ============================================================================
 import matplotlib.pyplot as plt
+from matplotlib import cm
+plt.style.use("ggplot")
 import numpy as np
 import pandas as pd
 import pickle
@@ -38,10 +40,10 @@ from scipy.stats import randint as sp_randint
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import (
-        train_test_split, 
-        cross_validate,
-        GridSearchCV,
-        RandomizedSearchCV
+    train_test_split,
+    cross_validate,
+    GridSearchCV,
+    RandomizedSearchCV,
 )
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.tree import DecisionTreeClassifier
@@ -54,7 +56,7 @@ import time
 from ActivityData import ActivityData
 
 
-def scale_data(train_data, test_data, scaler='standard'):
+def scale_data(train_data, test_data, scaler="standard"):
     """Scale train and test data.
 
     Parameters
@@ -77,9 +79,9 @@ def scale_data(train_data, test_data, scaler='standard'):
 
     """
 
-    if scaler == 'standard':
+    if scaler == "standard":
         sc = StandardScaler()
-    elif scaler == 'minmax':
+    elif scaler == "minmax":
         sc = MinMaxScaler()
     else:
         print('Scaler must be "standard" or "minmax"!')
@@ -105,8 +107,9 @@ def plot_confusion_matrix(y_test, y_pred, analysis_id=None):
         
     """
 
-    ax = skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True, cmap='Blues',
-            title=' ')
+    ax = skplt.metrics.plot_confusion_matrix(
+        y_test, y_pred, normalize=True, cmap="Blues", title=" "
+    )
 
     # Fixing cropped top and bottom
     bottom, top = ax.get_ylim()
@@ -114,8 +117,8 @@ def plot_confusion_matrix(y_test, y_pred, analysis_id=None):
 
     # Save figure with unique filename
     if analysis_id == None:
-        analysis_id = time.strftime('%Y%m%d-%H%M')
-    plt.savefig(analysis_id + '-confusionmatrix.pdf')
+        analysis_id = time.strftime("%Y%m%d-%H%M")
+    plt.savefig(analysis_id + "-confusionmatrix.pdf")
 
     # plt.show()
 
@@ -128,30 +131,32 @@ def report(results, n_top=3):
     """
 
     for i in range(1, n_top + 1):
-        candidates = np.flatnonzero(results['rank_test_score'] == i)
+        candidates = np.flatnonzero(results["rank_test_score"] == i)
         for candidate in candidates:
             fprint("Model with rank: {0}".format(i))
-            fprint("Mean validation score: {0:.3f} (std: {1:.3f})".format(
-                  results['mean_test_score'][candidate],
-                  results['std_test_score'][candidate]))
-            fprint("Parameters: {0}".format(results['params'][candidate]))
+            fprint(
+                "Mean validation score: {0:.3f} (std: {1:.3f})".format(
+                    results["mean_test_score"][candidate],
+                    results["std_test_score"][candidate],
+                )
+            )
+            fprint("Parameters: {0}".format(results["params"][candidate]))
             fprint("")
 
 
-def fprint(output, filename='output.txt'):
-    
+def fprint(output, filename="output.txt"):
+
     try:
         filename = FILENAME
     except:
         pass
 
     print(output)
-    with open(filename, 'a') as f:
-        f.write('{}\n'.format(output))
+    with open(filename, "a") as f:
+        f.write("{}\n".format(output))
 
 
-
-class AnalyzeBoost():
+class AnalyzeBoost:
     """Analyzing the performance of three different boosting methods:
     - AdaBoost,
     - Gradient boost,
@@ -185,17 +190,20 @@ class AnalyzeBoost():
 
     """
 
-    def __init__(self, 
-            X_train, X_test, y_train, y_test,
-            method='xgboost',
-            seed=0,
-            n_estimators=100,
-            learning_rate=0.5,
-            max_depth=3,
-            verbose=True,
-            time_id=time.strftime('%Y%m%d-%H%M&S')
-            ):
-
+    def __init__(
+        self,
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+        method="xgboost",
+        seed=0,
+        n_estimators=100,
+        learning_rate=0.5,
+        max_depth=3,
+        verbose=True,
+        time_id=time.strftime("%Y%m%d-%H%M&S"),
+    ):
 
         self.X_train = X_train
         self.X_test = X_test
@@ -211,66 +219,62 @@ class AnalyzeBoost():
         self.time_id = time_id
 
         if self.verbose:
-            fprint('-----------------------')
-            fprint(f'Time: {self.time_id}')
-            fprint(f'Number of training samples: {np.shape(self.X_train)[0]}')
-            fprint(f'Number of test samples: {np.shape(self.X_test)[0]}')
-            fprint(f'Method: {method}')
+            fprint("-----------------------")
+            fprint(f"Time: {self.time_id}")
+            fprint(f"Number of training samples: {np.shape(self.X_train)[0]}")
+            fprint(f"Number of test samples: {np.shape(self.X_test)[0]}")
+            fprint(f"Method: {method}")
 
-
-        if self.method == 'adaboost':
+        if self.method == "adaboost":
             self.base_estimator = DecisionTreeClassifier()
             self.clf = AdaBoostClassifier(base_estimator=self.base_estimator)
-            self.max_depth_str = 'base_estimator__max_depth'
-        elif self.method == 'gradientboost':
+            self.max_depth_str = "base_estimator__max_depth"
+        elif self.method == "gradientboost":
             self.clf = GradientBoostingClassifier()
-            self.max_depth_str = 'max_depth'
-        elif self.method == 'xgboost':
+            self.max_depth_str = "max_depth"
+        elif self.method == "xgboost":
             self.clf = xgb.XGBClassifier()
-            self.max_depth_str = 'max_depth'
+            self.max_depth_str = "max_depth"
         else:
-            print('Provide boost method.')
+            print("Provide boost method.")
             sys.exit(1)
-
-
 
     def fit(self):
         parameters = {
-                'n_estimators': self.n_estimators, 
-                'learning_rate': self.learning_rate,
-                self.max_depth_str: self.max_depth}
+            "n_estimators": self.n_estimators,
+            "learning_rate": self.learning_rate,
+            self.max_depth_str: self.max_depth,
+        }
 
         self.clf.set_params(**parameters)
 
         if self.verbose:
-            print('Making fit...')
+            print("Making fit...")
 
         self.clf.fit(self.X_train, self.y_train)
 
-        if self.verbose:
-            print('Feature importances:')
-            for score in self.clf.feature_importances_:
-                print(score)
+        self.imp = self.clf.feature_importances_
+        self.idcs = np.argsort(self.imp)
+        np.save("featimp-" + self.method + ".npy", self.imp)
 
+        if self.verbose:
+            fprint("Feature importances:")
+            for f in range(self.X_train.shape[1]):
+                fprint(f"{f+1}. feat. {self.idcs[f]} ({self.imp[self.idcs[f]]})")
 
         # Save model
-        pickle.dump(self.clf, open(
-            self.time_id + '-' + self.method + '-fit.pkl', 'wb'))
-            
-
+        pickle.dump(self.clf, open(self.time_id + "-" + self.method + "-fit.pkl", "wb"))
 
     def predict(self):
 
         if self.verbose:
-            print('Making predictions...')
+            print("Making predictions...")
 
         self.y_pred = self.clf.predict(self.X_test)
         accuracy = accuracy_score(self.y_pred, self.y_test)
-        fprint(f'Test accuracy score: {np.around(accuracy, decimals=3)}')
+        fprint(f"Test accuracy score: {np.around(accuracy, decimals=3)}")
 
-        plot_confusion_matrix(self.y_test, self.y_pred,
-                analysis_id=self.time_id)
-
+        plot_confusion_matrix(self.y_test, self.y_pred, analysis_id=self.time_id)
 
     def gridsearch(self, parameters=None, cv=5, load_search=None):
         """Performing a grid search for optimal parameters.
@@ -287,40 +291,48 @@ class AnalyzeBoost():
 
 
         """
-        
+
         if load_search is None:
             if parameters is None:
-                parameters =  [
-                        {'learning_rate': [1, 0.5, 0.1],
-                         'n_estimators': [100, 150, 200],
-                         self.max_depth_str: [5, 7, 9, 11]}
+                parameters = [
+                    {
+                        "learning_rate": [1, 0.5, 0.1],
+                        "n_estimators": [100, 150, 200],
+                        self.max_depth_str: [5, 7, 9, 11],
+                    }
                 ]
 
-            self.search = GridSearchCV(self.clf, param_grid=parameters, cv=cv,
-                    n_jobs=-1, verbose=6, return_train_score=True)
+            self.search = GridSearchCV(
+                self.clf,
+                param_grid=parameters,
+                cv=cv,
+                n_jobs=-1,
+                verbose=6,
+                return_train_score=True,
+            )
             self.search.fit(self.X_train, self.y_train)
 
             # Save model
-            pickle.dump(self.search, open(
-                self.time_id + '-' + self.method + '-search.pkl', 'wb'))
+            pickle.dump(
+                self.search,
+                open(self.time_id + "-" + self.method + "-search.pkl", "wb"),
+            )
 
         else:
-            self.search = pickle.load(open(load_search, 'rb'))
+            self.search = pickle.load(open(load_search, "rb"))
 
         # Save results from grid search and print to terminal
-        cv_results = pd.DataFrame(self.search.cv_results_) 
-        cv_results.to_csv(f'{self.time_id}-gridsearch.csv')
+        cv_results = pd.DataFrame(self.search.cv_results_)
+        cv_results.to_csv(f"{self.time_id}-gridsearch.csv")
         report(self.search.cv_results_)
 
         # Overwriting parameters to the best parameters found by search
-        self.learning_rate = self.search.best_params_['learning_rate']
-        self.n_estimators = self.search.best_params_['n_estimators']
+        self.learning_rate = self.search.best_params_["learning_rate"]
+        self.n_estimators = self.search.best_params_["n_estimators"]
         self.max_depth = self.search.best_params_[self.max_depth_str]
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Analyzing boosting methods when used for human activity recognition
     (HAR).
 
@@ -333,115 +345,139 @@ if __name__ == '__main__':
 
     """
 
-
     np.random.seed(2020)
-    TIME_ID = time.strftime('%Y%m%d-%H%M%S')
-    FILENAME = 'results/' + TIME_ID + '.txt'
+    TIME_ID = time.strftime("%Y%m%d-%H%M%S")
+    FILENAME = "results/" + TIME_ID + ".txt"
 
     try:
         case = sys.argv[1]
         method = sys.argv[2]
     except:
-        print('Give command line arguments:')
-        print('1. Case number (1 or 2)')
-        print('2. Boosting method')
+        print("Give command line arguments:")
+        print("1. Case number (1,2 or 3):")
+        print("    1: Mixed test set.")
+        print("    2: Separated test set.")
+        print("    3: Plot feature importance.")
+        print("2. Boosting method:")
+        print("    - adaboost")
+        print("    - gradientboost")
+        print("    - xgboost")
+        print("    - If case 3:")
+        print("        - all")
         sys.exit(1)
 
-
-    if case == '1':
+    if case == "1":
         """Training/test split is done on all subjects."""
 
-        fprint('Case 1: All subjects mixed.')
+        fprint("Case 1: All subjects mixed.")
 
-        data_file = 'activity_data_preprocessed_case1.npy'
+        data_file = "activity_data_preprocessed_case1.npy"
 
         # Preprocess data if not already done
         if not os.path.exists(data_file):
-            data = ActivityData(dir='data/activity/')
+            data = ActivityData(dir="data/activity/")
             data.output_to_npy(data_file)
-        
+
         data = np.load(data_file)
-        X = data[:,:-1]
-        y = data[:,-1]
+        X = data[:, :-1]
+        y = data[:, -1]
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-
-    elif case == '2':
+    elif case == "2":
         """Training and test sets contain different subjects."""
-        fprint('Case 2: Separate subjects in test data.')
+        fprint("Case 2: Separate subjects in test data.")
 
-        train_data_file = 'activity_data_preprocessed_case2_training.npy'
-        test_data_file = 'activity_data_preprocessed_case2_test.npy'
+        train_data_file = "activity_data_preprocessed_case2_training.npy"
+        test_data_file = "activity_data_preprocessed_case2_test.npy"
 
         # Preprocess data if not already done
         if not os.path.exists(test_data_file):
-            train_data = ActivityData(dir='data/activity/',
-                    subjects=list(range(1,13)))
+            train_data = ActivityData(dir="data/activity/", subjects=list(range(1, 13)))
             train_data.output_to_npy(train_data_file)
-            test_data = ActivityData(dir='data/activity/',
-                    subjects=list(range(13,16)))
+            test_data = ActivityData(dir="data/activity/", subjects=list(range(13, 16)))
             test_data.output_to_npy(test_data_file)
-        
+
         train_data = np.load(train_data_file)
         test_data = np.load(test_data_file)
-        X_train = train_data[:,:-1]
-        X_test = test_data[:,:-1]
-        y_train = train_data[:,-1]
-        y_test = test_data[:,-1]
+        X_train = train_data[:, :-1]
+        X_test = test_data[:, :-1]
+        y_train = train_data[:, -1]
+        y_test = test_data[:, -1]
 
+    elif case == "3":
+        """Plot feature importance."""
 
-    elif case == '3':
-        """Training and test sets contain different subjects."""
-        fprint('Case 3: Experimental case.')
+        cases = ["1", "2"]
 
-        train_data_file = 'activity_data_preprocessed_case3_training.npy'
-        test_data_file = 'activity_data_preprocessed_case3_test.npy'
-
-        # Preprocess data if not already done
-        if not os.path.exists(test_data_file):
-            train_data = ActivityData(dir='data/activity2/',
-                    subjects=list(range(1,4)))
-            train_data.output_to_npy(train_data_file)
-            test_data = ActivityData(dir='data/activity2/',
-                    subjects=list(range(4,5)))
-            test_data.output_to_npy(test_data_file)
         
-        train_data = np.load(train_data_file)
-        test_data = np.load(test_data_file)
-        X_train = train_data[:,:-1]
-        X_test = test_data[:,:-1]
-        y_train = train_data[:,-1]
-        y_test = test_data[:,-1]
+        for c in cases:
+            methods = [
+                "decisiontree",
+                "bagging",
+                "randomforest",
+                "adaboost",
+                "gradientboost",
+                # "xgboost"
+            ]
 
-        # data_file = 'activity_data_preprocessed_case3.npy'
+            importances = []
 
-        # # Preprocess data if not already done
-        # if not os.path.exists(data_file):
-        #     data = ActivityData(dir='data/activity2/',
-        #             subjects=list(range(1,5)))
-        #     data.output_to_npy(data_file)
-        
-        # data = np.load(data_file)
-        # X = data[:,:-1]
-        # y = data[:,-1]
+            for f in range(len(methods)):
+                importances.append(
+                    np.load("featimp-" + methods[f] + "-case" + c + ".npy")
+                )
 
-        # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+            n_features = len(importances[0])
+            features_idcs = np.array(range(n_features))
+            n_methods = len(methods)
+            center = n_methods // 2
+            step = 0.1
+
+            fig = plt.figure(figsize=(9,4))
+            color = iter(cm.viridis(np.linspace(0.2,1,n_methods)))
+
+            for i in range(n_methods):
+                imp = importances[i]
+                idcs = np.argsort(imp)
+
+                h = (i - center) * step
+                
+                if methods[i] == 'xgboost':
+                    plt.bar(features_idcs + h, imp, label=methods[i],
+                            width=0.1, color='red')
+                else:
+                    current_color = next(color)
+                    plt.bar(features_idcs + h, imp, label=methods[i],
+                            width=0.1, alpha=0.5, color=current_color)
+
+            plt.xticks(range(n_features))
+            plt.xlabel("Feature index")
+            plt.ylabel("Importance (%) case " + c)
+            plt.legend()
+            plt.savefig("featimp-case" + c + ".pdf")
+            plt.show()
+
 
     else:
-        print('Choose case 1 or 2.')
+        print("Choose case 1 or 2.")
         sys.exit(1)
 
-    X_train, X_test = scale_data(X_train, X_test, scaler='standard')
+    if case != "3":
+        X_train, X_test = scale_data(X_train, X_test, scaler="standard")
 
-    analysis = AnalyzeBoost(X_train, X_test, y_train, y_test,
+        analysis = AnalyzeBoost(
+            X_train,
+            X_test,
+            y_train,
+            y_test,
             method=method,
-            n_estimators=150,
+            n_estimators=200,
             learning_rate=1,
             max_depth=11,
-            time_id=TIME_ID)
+            time_id=TIME_ID,
+        )
 
-    # analysis.gridsearch()
-    analysis.fit()
-    analysis.predict()
-
+        # analysis.gridsearch()
+        analysis.fit()
+        analysis.predict()

@@ -4,3 +4,4 @@ Time: 20191205-121641
 Number of training samples: 59158
 Number of test samples: 14790
 Method: gradientboost
+Test accuracy score: 0.985
