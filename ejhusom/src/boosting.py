@@ -241,7 +241,17 @@ class AnalyzeBoost():
                 self.max_depth_str: self.max_depth}
 
         self.clf.set_params(**parameters)
+
+        if self.verbose:
+            print('Making fit...')
+
         self.clf.fit(self.X_train, self.y_train)
+
+        if self.verbose:
+            print('Feature importances:')
+            for score in self.clf.feature_importances_:
+                print(score)
+
 
         # Save model
         pickle.dump(self.clf, open(
@@ -250,6 +260,9 @@ class AnalyzeBoost():
 
 
     def predict(self):
+
+        if self.verbose:
+            print('Making predictions...')
 
         self.y_pred = self.clf.predict(self.X_test)
         accuracy = accuracy_score(self.y_pred, self.y_test)
@@ -334,6 +347,7 @@ if __name__ == '__main__':
         print('2. Boosting method')
         sys.exit(1)
 
+
     if case == '1':
         """Training/test split is done on all subjects."""
 
@@ -351,6 +365,7 @@ if __name__ == '__main__':
         y = data[:,-1]
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
 
     elif case == '2':
         """Training and test sets contain different subjects."""
@@ -374,6 +389,7 @@ if __name__ == '__main__':
         X_test = test_data[:,:-1]
         y_train = train_data[:,-1]
         y_test = test_data[:,-1]
+
 
     elif case == '3':
         """Training and test sets contain different subjects."""
@@ -421,8 +437,8 @@ if __name__ == '__main__':
     analysis = AnalyzeBoost(X_train, X_test, y_train, y_test,
             method=method,
             n_estimators=150,
-            learning_rate=0.5,
-            max_depth=3,
+            learning_rate=1,
+            max_depth=11,
             time_id=TIME_ID)
 
     # analysis.gridsearch()

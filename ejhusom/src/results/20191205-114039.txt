@@ -1,0 +1,7 @@
+Case 2: Separate subjects in test data.
+-----------------------
+Time: 20191205-114039
+Number of training samples: 62898
+Number of test samples: 11028
+Method: xgboost
+Test accuracy score: 0.194

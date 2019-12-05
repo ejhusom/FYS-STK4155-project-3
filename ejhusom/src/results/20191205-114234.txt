@@ -1,0 +1,7 @@
+Case 1: All subjects mixed.
+-----------------------
+Time: 20191205-114234
+Number of training samples: 59158
+Number of test samples: 14790
+Method: xgboost
+Test accuracy score: 0.992
