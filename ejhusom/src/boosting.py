@@ -418,7 +418,7 @@ if __name__ == "__main__":
                 "randomforest",
                 "adaboost",
                 "gradientboost",
-                # "xgboost"
+                "xgboost"
             ]
 
             importances = []
@@ -478,6 +478,6 @@ if __name__ == "__main__":
             time_id=TIME_ID,
         )
 
-        # analysis.gridsearch()
+        analysis.gridsearch()
         analysis.fit()
         analysis.predict()

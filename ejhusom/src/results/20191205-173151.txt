@@ -1,0 +1,36 @@
+Case 2: Separate subjects in test data.
+-----------------------
+Time: 20191205-173151
+Number of training samples: 62898
+Number of test samples: 11028
+Method: xgboost
+Model with rank: 1
+Mean validation score: 0.994 (std: 0.001)
+Parameters: {'learning_rate': 0.5, 'max_depth': 7, 'n_estimators': 200}
+
+Model with rank: 2
+Mean validation score: 0.994 (std: 0.001)
+Parameters: {'learning_rate': 0.5, 'max_depth': 5, 'n_estimators': 200}
+
+Model with rank: 3
+Mean validation score: 0.994 (std: 0.001)
+Parameters: {'learning_rate': 0.5, 'max_depth': 7, 'n_estimators': 150}
+
+Feature importances:
+1. feat. 8 (0.0029823232907801867)
+2. feat. 6 (0.008357040584087372)
+3. feat. 5 (0.010018905624747276)
+4. feat. 7 (0.018005264922976494)
+5. feat. 10 (0.02767658419907093)
+6. feat. 12 (0.04351723939180374)
+7. feat. 15 (0.05416400358080864)
+8. feat. 0 (0.05683992803096771)
+9. feat. 14 (0.06085503101348877)
+10. feat. 9 (0.07475199550390244)
+11. feat. 2 (0.07681406289339066)
+12. feat. 11 (0.07799872010946274)
+13. feat. 1 (0.07819239795207977)
+14. feat. 13 (0.09561756253242493)
+15. feat. 3 (0.09691724926233292)
+16. feat. 4 (0.2172917276620865)
+Test accuracy score: 0.136
