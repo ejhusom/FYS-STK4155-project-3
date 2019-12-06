@@ -4,7 +4,7 @@ import os, glob
 
 class ActivityData:
 
-    def __init__(self, dir, subjects = list(range(1,16)), simplify=False):
+    def __init__(self, dir, subjects = list(range(1,16)), simplify=True):
         self.freq = 52
         self.dir = dir
         self.subjects = subjects
