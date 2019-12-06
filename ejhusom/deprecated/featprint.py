@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # ============================================================================
-# File:     Skeleton for Python files
+# File:     featprint
 # Author:   Erik Johannes Husom
-# Created:  2019-06-19
+# Created:  2019-12-05
 # ----------------------------------------------------------------------------
 # Description:
-#
+# Save feature importance as numpy arrays.
 # ============================================================================
 import numpy as np 
 

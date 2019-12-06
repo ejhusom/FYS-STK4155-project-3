@@ -1,0 +1,9 @@
+Case 2: Separate subjects in test data.
+-----------------------
+Time: 20191206-120405
+Number of training samples: 62898
+Number of test samples: 11028
+Method: gradientboost
+Estimators: 100
+Learning rate: 2
+Max depth: 0.5

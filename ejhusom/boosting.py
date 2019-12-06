@@ -249,6 +249,9 @@ class AnalyzeBoost:
         self.clf.set_params(**parameters)
 
         if self.verbose:
+            fprint(f"Estimators: {self.n_estimators}")
+            fprint(f"Learning rate: {self.learning_rate}")
+            fprint(f"Max depth: {self.max_depth}")
             print("Making fit...")
 
         self.clf.fit(self.X_train, self.y_train)
@@ -435,7 +438,7 @@ if __name__ == "__main__":
             step = 0.1
 
             fig = plt.figure(figsize=(9,4))
-            color = iter(cm.viridis(np.linspace(0.2,1,n_methods)))
+            color = iter(cm.viridis(np.linspace(0,1,n_methods)))
 
             for i in range(n_methods):
                 imp = importances[i]
@@ -443,7 +446,7 @@ if __name__ == "__main__":
 
                 h = (i - center) * step
                 
-                if methods[i] == 'xgboost':
+                if methods[i] == 'gradientboost':
                     plt.bar(features_idcs + h, imp, label=methods[i],
                             width=0.1, color='red')
                 else:
@@ -453,7 +456,7 @@ if __name__ == "__main__":
 
             plt.xticks(range(n_features))
             plt.xlabel("Feature index")
-            plt.ylabel("Importance (%) case " + c)
+            plt.ylabel("Importance (%)")
             plt.legend()
             plt.savefig("featimp-case" + c + ".pdf")
             plt.show()
@@ -466,18 +469,34 @@ if __name__ == "__main__":
     if case != "3":
         X_train, X_test = scale_data(X_train, X_test, scaler="standard")
 
+
+        # Option to give parameters on command line
+        try:
+            n_estimators = int(sys.argv[3])
+            learning_rate = float(sys.argv[4])
+            max_depth = int(sys.argv[5])
+        except:
+            print("No valid parameters found at command line, using default.")
+            n_estimators = 200
+            learning_rate = 0.5
+            max_depth = 3
+
+       
         analysis = AnalyzeBoost(
             X_train,
             X_test,
             y_train,
             y_test,
             method=method,
-            n_estimators=200,
-            learning_rate=1,
-            max_depth=11,
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            max_depth=max_depth,
             time_id=TIME_ID,
         )
 
-        analysis.gridsearch()
+        # Perform a gridsearch if parameters are not given on command line
+        if len(sys.argv) < 3:
+            analysis.gridsearch()
+
         analysis.fit()
         analysis.predict()
