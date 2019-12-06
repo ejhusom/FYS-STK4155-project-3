@@ -263,7 +263,7 @@ class AnalyzeBoost:
         if self.verbose:
             fprint("Feature importances:")
             for f in range(self.X_train.shape[1]):
-                fprint(f"{f+1}. feat. {self.idcs[f]} ({self.imp[self.idcs[f]]})")
+                fprint(f"{f}. feat. {self.idcs[f]} ({self.imp[self.idcs[f]]})")
 
         # Save model
         pickle.dump(self.clf, open(self.time_id + "-" + self.method + "-fit.pkl", "wb"))

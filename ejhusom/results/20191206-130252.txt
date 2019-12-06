@@ -1,0 +1,27 @@
+Case 2: Separate subjects in test data.
+-----------------------
+Time: 20191206-130252
+Number of training samples: 62898
+Number of test samples: 11028
+Method: xgboost
+Estimators: 50
+Learning rate: 0.001
+Max depth: 2
+Feature importances:
+0. feat. 0 (0.0)
+1. feat. 5 (0.0)
+2. feat. 6 (0.0)
+3. feat. 8 (0.0)
+4. feat. 10 (0.0)
+5. feat. 14 (0.0)
+6. feat. 7 (0.012309348210692406)
+7. feat. 2 (0.030823297798633575)
+8. feat. 9 (0.03433293104171753)
+9. feat. 12 (0.036005303263664246)
+10. feat. 11 (0.042821139097213745)
+11. feat. 1 (0.05432034656405449)
+12. feat. 15 (0.05863651633262634)
+13. feat. 13 (0.15778043866157532)
+14. feat. 3 (0.27589282393455505)
+15. feat. 4 (0.29707786440849304)
+Test accuracy score: 0.36

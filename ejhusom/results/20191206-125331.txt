@@ -1,0 +1,9 @@
+Case 2: Separate subjects in test data.
+-----------------------
+Time: 20191206-125331
+Number of training samples: 61330
+Number of test samples: 10774
+Method: xgboost
+Estimators: 50
+Learning rate: 0.001
+Max depth: 3
