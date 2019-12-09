@@ -9,7 +9,8 @@ activity based on accelerometer data.
 
 ---
 
-![](har-mario-figure.png)
+![Illustration of some of the activities performed by the subjects in this
+project.](har-mario-figure.png)
 
 ## Source code
 
