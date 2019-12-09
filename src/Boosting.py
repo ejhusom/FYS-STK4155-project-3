@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ============================================================================
-# File:     boosting.py
+# File:     Boosting.py
 # Author:   Erik Johannes Husom
 # Created:  2019-11-20
 # ----------------------------------------------------------------------------
@@ -25,10 +25,6 @@
 # 3: Walking (combined class 4 and 6)
 # 4: Going up/down stairs (class 5)
 # Class 2 is removed
-#
-# Most simple targets:
-# 1: Inactive
-# 2: Active
 # ============================================================================
 import matplotlib.pyplot as plt
 from matplotlib import cm
