@@ -1,6 +1,5 @@
 # FYS-STK4155 - Project 3: Classifying human activity using trees and ensembles
 
-![](har-mario.png)
 
 This project uses decision trees and ensemble methods to classify human
 activity based on accelerometer data. For details of the methods and results of
@@ -56,3 +55,6 @@ forest will be run. The default behaviour is to run the analysis for setting 1
 (all subjects mixed in training and test set). To run setting 2 (separate
 subjects in test set), simply comment out the lines marked with `SETTING 2` in
 the last section of the file.
+
+
+![](har-mario.png)
