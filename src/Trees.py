@@ -12,6 +12,7 @@ import sklearn.tree
 import sklearn.metrics
 import scikitplot as skplt
 import time
+from ActivityData import *
 
 plt.style.use("ggplot")
 
@@ -42,7 +43,7 @@ class Trees:
     -------
     log_results(self, results, filename)
         Saves results to a text file.
-    analyze_trees(self, parameters, plotting, save_results)
+    analyze_tree(self, parameters, plotting, save_results)
         Uses cross-validation to determine best set of hyper parameters for
         a model, tests the best model on the test data, saves results to file
         and plots the confusion matrix.
@@ -73,7 +74,7 @@ class Trees:
         outfile.close()
         print("Results logged to %s" % filename)
 
-    def analyze_trees(self, parameters, plotting=True, save_results=True):
+    def analyze_tree(self, parameters, plotting=True, save_results=True):
 
         #Perform grid search
         search = skl.model_selection.GridSearchCV(
@@ -218,3 +219,38 @@ class Trees:
 
             ax.set_ylim(bottom + 0.5, top - 0.5)
             plt.show()
+
+if __name__ == '__main__':
+    dir_data = "data/activity/"
+
+    """MIXED SUBJECTS(SETTING 1)"""
+    data = ActivityData(dir_data)
+    X, y = data.get_feature_matrix()
+    X_train, X_test, y_train, y_test = skl.model_selection.train_test_split(X, y, test_size=0.2)
+    """END SETTING 1"""
+
+    """DIFFERENT SUBJECTS FOR TRAINING AND TEST(SETTING 2)"""
+    # data_train = ActivityData(dir_data, list(range(1, 13)), simplify=False)
+    # data_test = ActivityData(dir_data, list(range(13, 16)), simplify=False)
+    # X_train, y_train = data_train[:, :-1], data_train[:, -1]
+    # X_test, y_test = data_test[:, :-1], data_test[:, -1]
+    """END SETTING 2"""
+
+
+    scaler = skl.preprocessing.StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
+    parameters = [
+        {'criterion': ['entropy', 'gini'],
+         'n_estimators': [50, 100, 150, 200, 250, 300],
+          'max_depth': [3, 5, 7, 9, 11, 13, 15]},
+    ]
+
+
+    random_forest = Trees(X_train, X_test, y_train, y_test, max_features='sqrt')
+    random_forest.analyze_tree(parameters)
+    bagging = Trees(X_train, X_test, y_train, y_test, max_features=None)
+    bagging.analyze_tree(parameters)
+    decision_tree = Trees(X_train, X_test, y_train, y_test)
+    decision_tree.analyze_simple_tree(param_name='max_depth')
