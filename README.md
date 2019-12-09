@@ -25,7 +25,7 @@ The source code of this project consists of the following files:
 ### Running boosting analysis
 
 The usage of the script `Boosting.py` is done via command line arguments, and
-requires som additional information. The script is executed by running 
+requires some additional information. The script is executed by running 
 
 ```sh
 python Boosting.py [case] [method] [n_estimators] [learning_rate] [max_depth]
