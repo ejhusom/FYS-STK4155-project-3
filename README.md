@@ -12,6 +12,17 @@ activity based on accelerometer data.
 ![Illustration of some of the activities performed by the subjects in this
 project.](har-mario-figure.png)
 
+## Dependencies
+
+The source code of this project requires Python 3, and the following modules:
+
+- `matplotlib`
+- `numpy`
+- `pandas`
+- `pickle`
+- `sklearn`
+- `xgboost`
+
 ## Source code
 
 The source code of this project consists of the following files:
