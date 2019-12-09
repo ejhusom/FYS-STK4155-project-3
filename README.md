@@ -5,6 +5,10 @@ This project uses decision trees and ensemble methods to classify human
 activity based on accelerometer data. For details of the methods and results of
 the project, read the report found in this repository.
 
+---
+
+![](har-mario.png)
+
 ## Source code
 
 The source code of this project consists of the following files:
@@ -57,4 +61,3 @@ subjects in test set), simply comment out the lines marked with `SETTING 2` in
 the last section of the file.
 
 
-![](har-mario.png)
