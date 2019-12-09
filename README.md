@@ -1,9 +1,11 @@
 # FYS-STK4155 - Project 3: Classifying human activity using trees and ensembles
 
 This project uses decision trees and ensemble methods to classify human
-activity based on accelerometer data. For details of the methods and results of
-the project, read the report found in this repository. For details about the
-source code, read below.
+activity based on accelerometer data. 
+
+- For details of the methods and results of the project, read the report found
+  in this repository. 
+- For details about the source code, read below.
 
 ---
 
