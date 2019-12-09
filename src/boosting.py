@@ -350,7 +350,7 @@ if __name__ == "__main__":
 
     np.random.seed(2020)
     TIME_ID = time.strftime("%Y%m%d-%H%M%S")
-    FILENAME = "results/" + TIME_ID + ".txt"
+    FILENAME = "results_boosting/" + TIME_ID + ".txt"
 
     try:
         case = sys.argv[1]
