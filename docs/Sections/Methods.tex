@@ -1,0 +1,140 @@
+\section{Methods}\label{sec:Methods}
+
+
+\subsection{Decision Trees}
+Decision trees is a powerful machine learning algorithm capable of fitting complex data sets, used both for classification and regression. The structure of a decision tree is much like a real life tree, and consists of nodes, branches and leaves, where a node represents a test on a descriptive feature in the data, the branch represents the outcome of this test, and the leaves represent an outcome or a target feature. The main idea is to find the descriptive features in the data which contain the most information about the target feature, and then split the data set along these values such that the feature values of the underlying data set are as pure as possible. The most common measures of the impurity of a node is the \textit{gini index}\cite{geron}[p. 180]:
+\begin{align}
+\label{eq:gini_index}
+    g_m = 1 - \sum_{k=1}^K p_{m, k}^2
+\end{align}
+and the \textit{information entropy}\cite{geron}[p. 184]:
+\begin{align}
+\label{eq:info_entropy}
+    s_m = - \sum_{k=1}^K p_{m, k}\log{p_{m,k}}.
+\end{align}
+where $p$ is the ratio of class $k$ instances among the training instances in node $m$. A high value of either of these measures would represent a node which contains little information about which class the observation belongs to, and conversely a low or zero value represents a node with only one outcome, resulting in a leaf node.
+
+In building a tree, the \textit{Classification and Regression Tree} (CART) algorithm is commonly used, which splits the training set into two subsets using a single feature $k$ and threshold $t_k$. This pair $(k, t_k)$ is found by minimizing the cost function given by\cite{geron}[p. 182]:
+\begin{align}
+    C(k, t_k) = \frac{m_{left}}{m}G_{left} + \frac{m_{right}}{m}G_{right}
+\end{align}
+where $G_{left/right}$ measures the impurity(eq. \ref{eq:gini_index} or \ref{eq:info_entropy}) of the left and right subset and $m_{left/right}$ is the number of instances in the left and right subsets. Once a split has been made, the procedure recursively repeats for the subsets until the impurity reaches zero. This strategy by itself will likely lead to a very overfit model which does not generalize, so it is common to specify either a maximum tree depth or a minimum impurity threshold which should result in a leaf node.
+
+ Since the CART algorothm uses node impurity for node splitting, this measure also tells us something about how important a given feature is to determining the outcome of an observation, which can give additional insight into the problem at hand by allowing us to visualize the tree in terms of how it makes predictions. Feature importance is also possible to extract when using ensemble learning methods, which are discussed in the section below. This is done by taking a weighted average, across all the trees in the forest, of how much a given descriptive features reduces node impurity.
+
+
+\subsection{Bagging and Random Forests}
+\subsubsection{Bootstrap Aggregation}
+Bootstrap aggregation (or \textit{bagging}) is an ensemble learning method based on aggregating many different predictive models. In bagging, the individual models are trained on random subsets of the data which are drawn with replacement, and a prediction is made by obtaining the prediction of each individual model, then predict the class which gets the most votes. This method of machine learning is known to reduce both the bias and variance, and as a result yield a much higher prediction accuracy than a strong classifier by itself. The parameters which are normally tuned in training a bagging model is the number of subsamples which are drawn in each bootstrap, and how many individual predictive models to include in the final aggregated model. 
+
+\subsubsection{Random Forests}
+The random forest algorithm is another way of aggregating predictive models, but unlike bagging, it restricts itself to only using decision trees. The strength of random forests lies in that it introduces extra randomness when growing trees, by only searching for the best feature among a subset of features when growing a tree. In each splitting of a node, a fresh sample of typically $m \approx \sqrt{p}$ is randomly selected, which results in greater tree diversity and yielding an overall better model with lower variance. As with a simple tree, the maximum depth of the trees should be tuned to avoid overfitting, as well as the total number of trees in the ensemble.
+
+In this project, we use Scikit Learn's implementation of decision trees, bagging and random forests.
+
+
+\subsection{Boosting}
+
+Boosting methods are based on the idea that we combine several weak classifiers into one strong classifier, as is the case with bagging, but with boosting the classifiers are made sequentially. When using boosting, we train the classifiers one after the other, where each new classifier is trying to learn from the errors of the preceding one. In this project we will only use decision trees as the base estimator for our boosting algorithms. We have chosen to use three different boosting methods, and a high-level description of these are presented below.
+
+\subsubsection{AdaBoost}
+
+The AdaBoost (adaptive boosting) is one of the most common boosting algorithms used in machine learning. For each boosting iteration, we produce a weak classifier $G_m, m=1,2,...,M$, where $M$ is the number of classifiers. Using a binary classifier as an example, where the output is $y \in [-1, 1]$, we combine the predictions by using a weighted majority vote for our final classifier $G$\cite{hastie}:
+
+\begin{equation}
+    G = \text{sign} \left( \sum_{m=1}^M \alpha_m G_m \right).
+    \label{eq:boosting}
+\end{equation}
+
+The variables $\alpha_m$ are weights for each of the classifiers $G_m$, and are computed by the AdaBoost algorithm. The training data points $(x_i, y_i), i=1,2,...,N$ are modified for each iteration by applying weights $w_1, w_2,...,w_N$, which means that each individual observation is modified. The initial weights are set to $w_i = 1/N$, where $N$ is the number of observations. Then, for each iteration, the weights of correctly classified observations are decreased, and the weights of misclassified observations are increased, such that each successive classifier are more affected by the observations that its predecessor failed to classify. In more general terms, the hypothesis $f(x)$ can be expressed as\cite{hastie}[p. 341]
+
+\begin{equation}
+    f(x) = \sum_{m-1}^M \alpha_m b_m (x; \gamma),
+\end{equation}
+
+where $b_m$ are elementary basis functions of $x$, which also depend on a number of parameters $\gamma_m$. In our case this will be the weak classifiers that are combined into our final model. Both AdaBoost and the other boosting methods takes a parameter called the learning rate, which affects how much the weights are adjusted for each iteration.
+
+We use Scikit-Learn's implementation of AdaBoost\footnote{Link to the Scikit-Learn implementation of AdaBoost: \url{https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier}} in this project, and since we are predicting more than two classes, Scikit-Learn will use a multiclass version of AdaBoost that is called SAMME (\textit{Stagewise Additive Modeling using a Multiclass Exponential loss function}).
+
+
+\subsubsection{Gradient Boosting and XGBoost}
+
+Gradient boosting is another boosting method that combines weak classifiers into a strong one. While AdaBoost uses weighted data points to adjust each subsequent classifier, gradient boosting uses the residuals from each classifier to improve predictions. More generally, for each iteration $m$ we fit a tree, our base learner, to the negative gradient values of the loss function\cite{hastie}[p. 361]:
+
+\begin{equation}
+    r_{i,m} = - \left[\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\right]_{f=f_{m-1}},
+\end{equation}
+
+% \begin{equation}
+%     f_m = f_{m-1} + \lambda h_m,
+% \end{equation}
+
+where $r_{i,m}$ are the negative gradient values, $L$ is the loss function, and $i$ is the index of the observations. The negative gradient fit is then added to our estimate $f_m(x)$, and this is repeated for every iteration until we are left with our final classifier $f_M(x)$. With Scikit-Learn's implementation \texttt{GradientBoostingClassifier}, we use the default loss function \textit{deviance}, the multinomial log-likelihood loss function.
+
+XGBoost (Extreme Gradient Boosting) is a gradient boosting library, that provides a highly efficient way to use tree boosting on machine learning problems. The algorithms used in XGBoost are similar to those of gradient boosting, but are optimized for even higher performance. The details can be reviewed in the original XGBoost article\cite{Chen}.
+
+\subsubsection{Boosting parameters}
+
+For boosting methods there are typically three parameters we want to tune in order to optimize the model\cite{James}[p. 322]:
+
+\begin{itemize}
+    \item The number of trees. In the code this is called \texttt{n\_estimators}, and controls how many boosting iterations we run. With to many trees, the model might overfit to the training data.
+    \item The learning rate, a small positive number. This parameter affects how fast the boosting learns.
+    \item The depth of the trees, in other words the complexity of each tree in the ensemble. In the code, this parameter is passed as \texttt{max\_depth} to the functions of Scikit-Learn.
+\end{itemize}
+
+These three parameters are tuned using grid search and cross-validation, with Scikit-Learn's method \texttt{GridSearchCV}.
+
+
+\subsection{Description of the Data}
+The data set\footnote{The data set is available at the UCI website: \href{https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer}{https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer}} consists of measurements collected from a wearable accelerometer mounted on the chest of 15 participants performing 7 activites. The features of the raw data are the uncalibrated acceletations in the $x, y$ and $z$ directions, sampeled at a frequency of $52$ Hz, totalling $1.9\times 10^6$ measurements. The target features are labeled from $1$ to $7$, with each number corresponding to the following activities:
+\begin{enumerate}
+    \item Working at computer
+    \item Standing up, walking and going up/down stairs
+    \item Standing
+    \item Walking 
+    \item Going up/down stairs
+    \item Walking and talking with someone
+    \item Talking while standing.
+\end{enumerate}
+When preprocessing this data, we extract features from the raw acceleration measurements using a window size of $52$ samples (corersponding to $1$ second) with $26$ samples overlapping between consecutive windows\footnote{Overlapping between consecutive windows has demonstrated good results in previous work \cite{devaul}.}. From the samples in each of these windows, we calculate and form in total 16 descriptive features, shown in table \ref{tab:features}. When training our models, we have chosen two cases of splitting the data into training and test. In the first case, the activity data from all the subjects are randomly shuffeled, and 80\% are then used for training and validation, and 20\% for testing. In the second case, we use only measurements from $12$ of the subjects for training and validation, and the remaining $3$ for testing. In the rest of the report, these cases are reffered to as \textit{setting 1} and \textit{setting 2}.
+
+
+\begin{table}[]
+    \centering
+    \caption{Features extracted from the raw data.}
+    \begin{tabular}{|c|c||c|c|}
+    \hline
+    Index & Feature & Index & Feature \\
+    \hline
+    0     & Mean $x$-acceleration & 8 & Range of $z$-acceleration \\
+    \hline
+    1     & Mean $y$-acceleration & 9 & Magnitude of acceleration \\
+    \hline
+    2     & Mean $z$-acceleration & 10 & Velocity in $x$-direction \\
+    \hline
+    3     & Standard devation of $x$-acceleration & 11 & Velocity in $y$-direction \\
+    \hline
+    4     & Standard devation of $y$-acceleration & 12 & Velocity in $z$-direction  \\
+    \hline
+    5     & Standard devation of $z$-acceleration & 13 & Periodicity of $x$-acceleration \\
+    \hline
+    6     & Range of $x$-acceleration & 14 & Periodicity of $y$-acceleration \\
+    \hline
+    7     & Range of $y$-acceleration & 15 & Periodicity of $z$-acceleration \\
+    \hline
+    \end{tabular}
+    \label{tab:features}
+\end{table}
+
+
+
+\subsection{Source code}
+
+The source code of this project is written in Python, and can be found in the GitHub repository at \url{https://github.com/ejhusom/FYS-STK4155-project-3/}. The repository contains our source code in the folder \texttt{src}, which consists of the following files:
+
+\begin{itemize}
+    \item \texttt{ActivityData.py}: Preprocessing of the activity data, including loading, feature extraction and scaling.
+    \item \texttt{Boosting.py}: Functions for using AdaBoost, gradient boosting and XGBoost on the activity data, and analyzing the performance of these methods.
+    \item \texttt{Trees.py}: Functions for using a single decision tree, random forest and bagging on the activity data, and analyize the performance of these methods.
+\end{itemize}

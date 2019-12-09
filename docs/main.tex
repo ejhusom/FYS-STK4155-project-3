@@ -1,0 +1,107 @@
+\documentclass[english,10pt, a4paper]{amsart}
+%\usepackage[english,norsk]{babel}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[left=25mm, right=25mm]{geometry}
+ 
+\usepackage{geometry}   % Margins
+\usepackage{graphicx}   % Images
+\usepackage{float}      % Image floating
+%\usepackage{siunitx}    % SI-units
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmin}{argmin}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{framed}
+\usepackage{physics}
+\usepackage{multirow}
+\usepackage[]{algorithm2e}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\bibliographystyle{plain}
+
+\setlength{\parindent}{0.95em}
+\setlength{\parskip}{0.95em}
+
+
+\SetKwFor{For}{for (}{) $\lbrace$}{$\rbrace$}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+
+\usepackage{color}
+%\usepackage{multicol}
+%\setlength\columnsep{14pt}
+ 
+\definecolor{codegreen}{RGB}{0, 146, 146}
+\definecolor{codegray}{rgb}{0.4,0.4,0.4}
+\definecolor{codeblue}{RGB}{0, 109, 219}
+\definecolor{backcolour}{rgb}{0.9,0.9,0.9}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codeblue},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,
+    showstringspaces=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    basicstyle=\footnotesize \ttfamily \color{black} \bfseries,
+    xleftmargin=0.4cm,
+    frame=tlbr, framesep=0.1cm, framerule=0pt,
+    showtabs=false,
+    tabsize=2
+}
+
+%---------- included files ------------------------
+\includeonly
+{
+    Sections/Introduksjon,
+    Sections/Teori, 
+    Sections/Eksperimentelt,
+    Sections/Resultater,
+    Sections/Diskusjon,
+    Sections/Konklusjon,
+    %Sections/Future,
+}
+ 
+\lstset{style=mystyle}
+ 
+ 
+\title[Classifying human activity using tree ensembles]{\large FYS-STK4155 - Project 3: \\
+Classifying human activity using tree ensembles}
+\author[Sexton, Husom]{Alexander Harold Sexton \\ Erik Johannes Husom \\ \\ \today}
+ 
+ 
+\begin{document}
+
+\maketitle
+\input{Sections/Abstract.tex}
+ 
+\tableofcontents
+ 
+%\begin{multicols}{2}
+%\newpage
+\input{Sections/Introduction}
+\input{Sections/Methods}
+%\input{Sections/Methods}
+\input{Sections/Results}
+\input{Sections/Discussion}
+\input{Sections/Conclusion}
+
+%\newpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\newpage
+\input{Sections/Appendix.tex}
+ 
+%\end{multicols}
+\end{document}
