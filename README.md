@@ -6,7 +6,7 @@ the project, read the report found in this repository.
 
 ---
 
-![](har-mario.png)
+![](har-mario-figure.png)
 
 ## Source code
 
