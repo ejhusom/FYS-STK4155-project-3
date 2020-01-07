@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Alexander Harold Sexton Erik Johannes Husom" />
+  <title>FYS-STK4155 - Project 3: Classifying human activity using tree ensembles</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="report.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">FYS-STK4155 - Project 3:<br />
+Classifying human activity using tree ensembles</h1>
+<p class="author">Alexander Harold Sexton<br />
+Erik Johannes Husom<br />
+<br /></p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#sec:Introduction">Introduction</a></li>
+<li><a href="#sec:Methods">Methods</a><ul>
+<li><a href="#decision-trees">Decision Trees</a></li>
+<li><a href="#bagging-and-random-forests">Bagging and Random Forests</a><ul>
+<li><a href="#bootstrap-aggregation">Bootstrap Aggregation</a></li>
+<li><a href="#random-forests">Random Forests</a></li>
+</ul></li>
+<li><a href="#boosting">Boosting</a><ul>
+<li><a href="#adaboost">AdaBoost</a></li>
+<li><a href="#gradient-boosting-and-xgboost">Gradient Boosting and XGBoost</a></li>
+<li><a href="#boosting-parameters">Boosting parameters</a></li>
+</ul></li>
+<li><a href="#description-of-the-data">Description of the Data</a></li>
+<li><a href="#source-code">Source code</a></li>
+</ul></li>
+<li><a href="#sec:Results">Results</a></li>
+<li><a href="#sec:Discussion">Discussion</a></li>
+<li><a href="#sec:Conclusion">Conclusion</a></li>
+<li><a href="#sec:Appendix">Appendix</a></li>
+</ul>
+</nav>
+
+
+<h1 id="sec:Introduction">Introduction</h1>
+<p>Human activity recognition (HAR) is technology that aims to recognize the activity that a person performs, based on observations of the person. Usually these observations are obtained by collecting data from various sensors placed on different parts of the body. This has many applications, for example in fields such as healthcare and sports science, and it is also widely used through the ubiquity of smartphones, smartwatches and other wearables that constantly track the movements of the user. One of the most common cases is recreational users who want to track their everyday activity, but this technology has also more critical applications, such as fall detection for sick and elderly<span class="citation" data-cites="Lustrek2009"></span>.</p>
+<p>Activity recognition can be seen as a typical classification problem, with activity type as the target variable. While there are many possibilities with regards to what type of data to use as features of a model, accelerometer data are arguably one of the most attractive data types; accelerometers are easy to wear, cost-efficent, records data closely connected to the movements of a person, and are already present in most smartphones and wearables. In this project we deal with a dataset publicly available at the Machine Learning Repository of University of California, Irvine (UCI)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, which provides data from a single chest-mounted accelerometer. Since activity sensors produce time series data, the predicted target for each observation will also be dependent on several of the preceeding data points. Many common machine learning methods, including the ones we explore in this project, will then require that we do a feature extraction on &quot;windows&quot; of the time series data, which has been done with success in previous research<span class="citation" data-cites="Casale2011"></span>. Both the feature extraction and the training/test-split of the dataset have significant effect on the model performance, and this is one of the challenges we face in this project.</p>
+<p>In this report we present the background theory and the methods used in the project. We have chosen to focus on tree-based methods, ranging from a single decision tree through bagging, random forests and several boosting algorithms, with trees as the base classifier. Our findings are presented in the results section, where we also include results from related research<span class="citation" data-cites="ravi"></span> for the sake of comparison. This is followed by a discussion of the results, and lastly a conclusion. The appendix contains results from a deeper analysis of the dataset; these findings were obtained in the last stages of the project, where we explore additional methods to deal with overfitting of the training data.</p>
+<h1 id="sec:Methods">Methods</h1>
+<h2 id="decision-trees">Decision Trees</h2>
+<p>Decision trees is a powerful machine learning algorithm capable of fitting complex data sets, used both for classification and regression. The structure of a decision tree is much like a real life tree, and consists of nodes, branches and leaves, where a node represents a test on a descriptive feature in the data, the branch represents the outcome of this test, and the leaves represent an outcome or a target feature. The main idea is to find the descriptive features in the data which contain the most information about the target feature, and then split the data set along these values such that the feature values of the underlying data set are as pure as possible. The most common measures of the impurity of a node is the <em>gini index</em><span class="citation" data-cites="geron"></span>[p. 180]: <span class="math display">\[\label{eq:gini_index}
+    g_m = 1 - \sum_{k=1}^K p_{m, k}^2\]</span> and the <em>information entropy</em><span class="citation" data-cites="geron"></span>[p. 184]: <span class="math display">\[\label{eq:info_entropy}
+    s_m = - \sum_{k=1}^K p_{m, k}\log{p_{m,k}}.\]</span> where <span class="math inline">\(p\)</span> is the ratio of class <span class="math inline">\(k\)</span> instances among the training instances in node <span class="math inline">\(m\)</span>. A high value of either of these measures would represent a node which contains little information about which class the observation belongs to, and conversely a low or zero value represents a node with only one outcome, resulting in a leaf node.</p>
+<p>In building a tree, the <em>Classification and Regression Tree</em> (CART) algorithm is commonly used, which splits the training set into two subsets using a single feature <span class="math inline">\(k\)</span> and threshold <span class="math inline">\(t_k\)</span>. This pair <span class="math inline">\((k, t_k)\)</span> is found by minimizing the cost function given by<span class="citation" data-cites="geron"></span>[p. 182]: <span class="math display">\[C(k, t_k) = \frac{m_{left}}{m}G_{left} + \frac{m_{right}}{m}G_{right}\]</span> where <span class="math inline">\(G_{left/right}\)</span> measures the impurity(eq. <a href="#eq:gini_index" data-reference-type="ref" data-reference="eq:gini_index">[eq:gini_index]</a> or <a href="#eq:info_entropy" data-reference-type="ref" data-reference="eq:info_entropy">[eq:info_entropy]</a>) of the left and right subset and <span class="math inline">\(m_{left/right}\)</span> is the number of instances in the left and right subsets. Once a split has been made, the procedure recursively repeats for the subsets until the impurity reaches zero. This strategy by itself will likely lead to a very overfit model which does not generalize, so it is common to specify either a maximum tree depth or a minimum impurity threshold which should result in a leaf node.</p>
+<p>Since the CART algorothm uses node impurity for node splitting, this measure also tells us something about how important a given feature is to determining the outcome of an observation, which can give additional insight into the problem at hand by allowing us to visualize the tree in terms of how it makes predictions. Feature importance is also possible to extract when using ensemble learning methods, which are discussed in the section below. This is done by taking a weighted average, across all the trees in the forest, of how much a given descriptive features reduces node impurity.</p>
+<h2 id="bagging-and-random-forests">Bagging and Random Forests</h2>
+<h3 id="bootstrap-aggregation">Bootstrap Aggregation</h3>
+<p>Bootstrap aggregation (or <em>bagging</em>) is an ensemble learning method based on aggregating many different predictive models. In bagging, the individual models are trained on random subsets of the data which are drawn with replacement, and a prediction is made by obtaining the prediction of each individual model, then predict the class which gets the most votes. This method of machine learning is known to reduce both the bias and variance, and as a result yield a much higher prediction accuracy than a strong classifier by itself. The parameters which are normally tuned in training a bagging model is the number of subsamples which are drawn in each bootstrap, and how many individual predictive models to include in the final aggregated model.</p>
+<h3 id="random-forests">Random Forests</h3>
+<p>The random forest algorithm is another way of aggregating predictive models, but unlike bagging, it restricts itself to only using decision trees. The strength of random forests lies in that it introduces extra randomness when growing trees, by only searching for the best feature among a subset of features when growing a tree. In each splitting of a node, a fresh sample of typically <span class="math inline">\(m \approx \sqrt{p}\)</span> is randomly selected, which results in greater tree diversity and yielding an overall better model with lower variance. As with a simple tree, the maximum depth of the trees should be tuned to avoid overfitting, as well as the total number of trees in the ensemble.</p>
+<p>In this project, we use Scikit Learn’s implementation of decision trees, bagging and random forests.</p>
+<h2 id="boosting">Boosting</h2>
+<p>Boosting methods are based on the idea that we combine several weak classifiers into one strong classifier, as is the case with bagging, but with boosting the classifiers are made sequentially. When using boosting, we train the classifiers one after the other, where each new classifier is trying to learn from the errors of the preceding one. In this project we will only use decision trees as the base estimator for our boosting algorithms. We have chosen to use three different boosting methods, and a high-level description of these are presented below.</p>
+<h3 id="adaboost">AdaBoost</h3>
+<p>The AdaBoost (adaptive boosting) is one of the most common boosting algorithms used in machine learning. For each boosting iteration, we produce a weak classifier <span class="math inline">\(G_m, m=1,2,...,M\)</span>, where <span class="math inline">\(M\)</span> is the number of classifiers. Using a binary classifier as an example, where the output is <span class="math inline">\(y \in [-1, 1]\)</span>, we combine the predictions by using a weighted majority vote for our final classifier <span class="math inline">\(G\)</span><span class="citation" data-cites="hastie"></span>:</p>
+<p><span class="math display">\[G = \text{sign} \left( \sum_{m=1}^M \alpha_m G_m \right).
+    \label{eq:boosting}\]</span></p>
+<p>The variables <span class="math inline">\(\alpha_m\)</span> are weights for each of the classifiers <span class="math inline">\(G_m\)</span>, and are computed by the AdaBoost algorithm. The training data points <span class="math inline">\((x_i, y_i), i=1,2,...,N\)</span> are modified for each iteration by applying weights <span class="math inline">\(w_1, w_2,...,w_N\)</span>, which means that each individual observation is modified. The initial weights are set to <span class="math inline">\(w_i = 1/N\)</span>, where <span class="math inline">\(N\)</span> is the number of observations. Then, for each iteration, the weights of correctly classified observations are decreased, and the weights of misclassified observations are increased, such that each successive classifier are more affected by the observations that its predecessor failed to classify. In more general terms, the hypothesis <span class="math inline">\(f(x)\)</span> can be expressed as<span class="citation" data-cites="hastie"></span>[p. 341]</p>
+<p><span class="math display">\[f(x) = \sum_{m-1}^M \alpha_m b_m (x; \gamma),\]</span></p>
+<p>where <span class="math inline">\(b_m\)</span> are elementary basis functions of <span class="math inline">\(x\)</span>, which also depend on a number of parameters <span class="math inline">\(\gamma_m\)</span>. In our case this will be the weak classifiers that are combined into our final model. Both AdaBoost and the other boosting methods takes a parameter called the learning rate, which affects how much the weights are adjusted for each iteration.</p>
+<p>We use Scikit-Learn’s implementation of AdaBoost<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> in this project, and since we are predicting more than two classes, Scikit-Learn will use a multiclass version of AdaBoost that is called SAMME (<em>Stagewise Additive Modeling using a Multiclass Exponential loss function</em>).</p>
+<h3 id="gradient-boosting-and-xgboost">Gradient Boosting and XGBoost</h3>
+<p>Gradient boosting is another boosting method that combines weak classifiers into a strong one. While AdaBoost uses weighted data points to adjust each subsequent classifier, gradient boosting uses the residuals from each classifier to improve predictions. More generally, for each iteration <span class="math inline">\(m\)</span> we fit a tree, our base learner, to the negative gradient values of the loss function<span class="citation" data-cites="hastie"></span>[p. 361]:</p>
+<p><span class="math display">\[r_{i,m} = - \left[\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\right]_{f=f_{m-1}},\]</span></p>
+<p>where <span class="math inline">\(r_{i,m}\)</span> are the negative gradient values, <span class="math inline">\(L\)</span> is the loss function, and <span class="math inline">\(i\)</span> is the index of the observations. The negative gradient fit is then added to our estimate <span class="math inline">\(f_m(x)\)</span>, and this is repeated for every iteration until we are left with our final classifier <span class="math inline">\(f_M(x)\)</span>. With Scikit-Learn’s implementation <code>GradientBoostingClassifier</code>, we use the default loss function <em>deviance</em>, the multinomial log-likelihood loss function.</p>
+<p>XGBoost (Extreme Gradient Boosting) is a gradient boosting library, that provides a highly efficient way to use tree boosting on machine learning problems. The algorithms used in XGBoost are similar to those of gradient boosting, but are optimized for even higher performance. The details can be reviewed in the original XGBoost article<span class="citation" data-cites="Chen"></span>.</p>
+<h3 id="boosting-parameters">Boosting parameters</h3>
+<p>For boosting methods there are typically three parameters we want to tune in order to optimize the model<span class="citation" data-cites="James"></span>[p. 322]:</p>
+<ul>
+<li><p>The number of trees. In the code this is called <code>n_estimators</code>, and controls how many boosting iterations we run. With to many trees, the model might overfit to the training data.</p></li>
+<li><p>The learning rate, a small positive number. This parameter affects how fast the boosting learns.</p></li>
+<li><p>The depth of the trees, in other words the complexity of each tree in the ensemble. In the code, this parameter is passed as <code>max_depth</code> to the functions of Scikit-Learn.</p></li>
+</ul>
+<p>These three parameters are tuned using grid search and cross-validation, with Scikit-Learn’s method <code>GridSearchCV</code>.</p>
+<h2 id="description-of-the-data">Description of the Data</h2>
+<p>The data set<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> consists of measurements collected from a wearable accelerometer mounted on the chest of 15 participants performing 7 activites. The features of the raw data are the uncalibrated acceletations in the <span class="math inline">\(x, y\)</span> and <span class="math inline">\(z\)</span> directions, sampeled at a frequency of <span class="math inline">\(52\)</span> Hz, totalling <span class="math inline">\(1.9\times 10^6\)</span> measurements. The target features are labeled from <span class="math inline">\(1\)</span> to <span class="math inline">\(7\)</span>, with each number corresponding to the following activities:</p>
+<ol>
+<li><p>Working at computer</p></li>
+<li><p>Standing up, walking and going up/down stairs</p></li>
+<li><p>Standing</p></li>
+<li><p>Walking</p></li>
+<li><p>Going up/down stairs</p></li>
+<li><p>Walking and talking with someone</p></li>
+<li><p>Talking while standing.</p></li>
+</ol>
+<p>When preprocessing this data, we extract features from the raw acceleration measurements using a window size of <span class="math inline">\(52\)</span> samples (corersponding to <span class="math inline">\(1\)</span> second) with <span class="math inline">\(26\)</span> samples overlapping between consecutive windows<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. From the samples in each of these windows, we calculate and form in total 16 descriptive features, shown in table <a href="#tab:features" data-reference-type="ref" data-reference="tab:features">[tab:features]</a>. When training our models, we have chosen two cases of splitting the data into training and test. In the first case, the activity data from all the subjects are randomly shuffeled, and 80% are then used for training and validation, and 20% for testing. In the second case, we use only measurements from <span class="math inline">\(12\)</span> of the subjects for training and validation, and the remaining <span class="math inline">\(3\)</span> for testing. In the rest of the report, these cases are reffered to as <em>setting 1</em> and <em>setting 2</em>.</p>
+
+<table>
+<caption>Features extracted from the raw data.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Index</th>
+<th style="text-align: center;">Feature</th>
+<th style="text-align: center;">Index</th>
+<th style="text-align: center;">Feature</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">Mean <span class="math inline">\(x\)</span>-acceleration</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">Range of <span class="math inline">\(z\)</span>-acceleration</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Mean <span class="math inline">\(y\)</span>-acceleration</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Magnitude of acceleration</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Mean <span class="math inline">\(z\)</span>-acceleration</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">Velocity in <span class="math inline">\(x\)</span>-direction</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Standard devation of <span class="math inline">\(x\)</span>-acceleration</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">Velocity in <span class="math inline">\(y\)</span>-direction</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">Standard devation of <span class="math inline">\(y\)</span>-acceleration</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">Velocity in <span class="math inline">\(z\)</span>-direction</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">Standard devation of <span class="math inline">\(z\)</span>-acceleration</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">Periodicity of <span class="math inline">\(x\)</span>-acceleration</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">Range of <span class="math inline">\(x\)</span>-acceleration</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">Periodicity of <span class="math inline">\(y\)</span>-acceleration</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">Range of <span class="math inline">\(y\)</span>-acceleration</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">Periodicity of <span class="math inline">\(z\)</span>-acceleration</td>
+</tr>
+</tbody>
+</table>
+<p><span id="tab:features" label="tab:features">[tab:features]</span></p>
+<h2 id="source-code">Source code</h2>
+<p>The source code of this project is written in Python, and can be found in the GitHub repository at <a href="https://github.com/ejhusom/FYS-STK4155-project-3/" class="uri">https://github.com/ejhusom/FYS-STK4155-project-3/</a>. The repository contains our source code in the folder <code>src</code>, which consists of the following files:</p>
+<ul>
+<li><p><code>ActivityData.py</code>: Preprocessing of the activity data, including loading, feature extraction and scaling.</p></li>
+<li><p><code>Boosting.py</code>: Functions for using AdaBoost, gradient boosting and XGBoost on the activity data, and analyzing the performance of these methods.</p></li>
+<li><p><code>Trees.py</code>: Functions for using a single decision tree, random forest and bagging on the activity data, and analyize the performance of these methods.</p></li>
+</ul>
+<h1 id="sec:Results">Results</h1>
+<p>To find the optimal parameters for our machine learning methods, we performed a cross-validation grid search. The results are presented in table <a href="#tab:configuration" data-reference-type="ref" data-reference="tab:configuration">[tab:configuration]</a>. For the three boosting methods the following ranges were tested for each parameter:</p>
+<ul>
+<li><p>Estimators: 100, 150, 200.</p></li>
+<li><p>Max depth: 5, 7, 9, 11.</p></li>
+<li><p>Learning rate: 1, 0.5, 0.1.</p></li>
+</ul>
+<p>For the bagging and random forest methods we did a search over the following parameter space:</p>
+<ul>
+<li><p>Estimators: 100, 150, 200, 250, 300.</p></li>
+<li><p>Max depth: 3, 5, 7, 9, 11, 13, 15.</p></li>
+</ul>
+<p>In the case of the simple decision tree, we did a tree depth search from <span class="math inline">\(2\)</span> to <span class="math inline">\(20\)</span>. We have also used both the gini index and information entropy as node impurity measures for the trees, in which the information entropy gave the best scores in every case.</p>
+<p>Figure <a href="#fig:simple_tree_crossval" data-reference-type="ref" data-reference="fig:simple_tree_crossval">[fig:simple_tree_crossval]</a> shows the validation curve of the simple decision tree, in which we found that a depth of <span class="math inline">\(19\)</span> was optimal, giving an accuracy score of <span class="math inline">\(97.8\)</span> on the test data. We see from the figure that a tree with only depth <span class="math inline">\(2\)</span> has roughly a <span class="math inline">\(50\%\)</span> accuracy of predicting the correct class among the <span class="math inline">\(7\)</span>, with an increasing trend until it reaches a tree depth of approximately 13, after which both the validation and training scores remain constant.</p>
+
+<figure>
+<embed src="Figures/20191205-131043_simple_tree_tree_depth_opt.pdf" /><figcaption>Validation curve of a simple decision tree on the setting 1 data. Optimal tree depth is 19, with validation score 97.5 and test score 97.8.</figcaption>
+</figure>
+<p><span id="fig:simple_tree_crossval" label="fig:simple_tree_crossval">[fig:simple_tree_crossval]</span></p>
+<p>Table <a href="#tab:accuracy" data-reference-type="ref" data-reference="tab:accuracy">[tab:accuracy]</a> shows the accuracy of our ensemble methods, with their optimal parameter configurations listed in table <a href="#tab:configuration" data-reference-type="ref" data-reference="tab:configuration">[tab:configuration]</a>. We see that gradient boosting and XGBoost have the best performance with an accuracy score of <span class="math inline">\(99.5\)</span>, while AdaBoost and random forests perform almost equally as well with accuracy scores of <span class="math inline">\(99.1\)</span>. The bagging classifier is only slightly worse with a score of <span class="math inline">\(97.8\)</span>. Using setting 2, gradient boosting performs best with a score of <span class="math inline">\(19.5\)</span>, while the rest of the classifiers are below <span class="math inline">\(14\)</span>.</p>
+<p>In table <a href="#tab:ravi_results" data-reference-type="ref" data-reference="tab:ravi_results">[tab:ravi_results]</a> we present the results from a similar research paper on human activity recognition from Ravi et al.<span class="citation" data-cites="ravi"></span>. This paper compared several machine learning methods, and we have included the ones that matches the methods of our project. Ravi et al. used raw data from a triaxial accelerometer, akin to us, and extracted a similar feature set to ours, by using window sampling to calculate mean, standard deviation etc. The sampling window was however <span class="math inline">\(5.12\)</span> seconds, while ours was <span class="math inline">\(1\)</span> second, and they extracted some additional features (details can be found in the original research paper<span class="citation" data-cites="ravi"></span>). Also note that setting 2 is defined slightly different in this case, as mentioned in the table caption. For setting 1, the decision tree outperformed bagging and boosting with a score of <span class="math inline">\(98.53\)</span>, while bagging gave the best performance in setting 2, with a score of <span class="math inline">\(63.33\)</span>.</p>
+<p>Figure <a href="#fig:confusion_matrix" data-reference-type="ref" data-reference="fig:confusion_matrix">[fig:confusion_matrix]</a> shows the confusion matrices for the best performing classifiers in both setting 1 and 2. The feature importances are shown in figure <a href="#fig:feature_importance" data-reference-type="ref" data-reference="fig:feature_importance">[fig:feature_importance]</a>, estimated for all the methods we tested in this project. The overall best performing classifier, gradient boosting, is highlighted in red. Feature 4, standard deviation of <span class="math inline">\(y\)</span>-acceleration, stands out as the most significant feature in most methods, while 5-8 (standard deviation of <span class="math inline">\(z\)</span>-acceleration and ranges of all axes) are generally regarded as relatively unimportant.</p>
+<table>
+<caption>Configuration of the classifiers for the two different cases, found by performing a cross-validation grid search on the parameters.</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">Estimators</td>
+<td style="text-align: center;">Max depth</td>
+<td style="text-align: center;">Learning rate</td>
+<td style="text-align: center;">Estimators</td>
+<td style="text-align: center;">Max depth</td>
+<td style="text-align: center;">Learning rate</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Decision tree</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bagging</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Random forest</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">300</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AdaBoost</td>
+<td style="text-align: center;">150</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gradient boosting</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">XGBoost</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0.5</td>
+</tr>
+</tbody>
+</table>
+<p>’ <span id="tab:configuration" label="tab:configuration">[tab:configuration]</span></p>
+<table>
+<caption>Accuracy of classifiers for the two different settings.</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">Setting 1</td>
+<td style="text-align: center;">Setting 2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Decision tree</td>
+<td style="text-align: center;">97.8</td>
+<td style="text-align: center;">7.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bagging</td>
+<td style="text-align: center;">98.9</td>
+<td style="text-align: center;">12.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Random forest</td>
+<td style="text-align: center;">99.1</td>
+<td style="text-align: center;">10.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AdaBoost</td>
+<td style="text-align: center;">99.1</td>
+<td style="text-align: center;">13.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gradient boosting</td>
+<td style="text-align: center;">99.5</td>
+<td style="text-align: center;">19.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">XGBoost</td>
+<td style="text-align: center;">99.5</td>
+<td style="text-align: center;">13.6</td>
+</tr>
+</tbody>
+</table>
+<p><span id="tab:accuracy" label="tab:accuracy">[tab:accuracy]</span></p>
+
+<table>
+<caption>Results from the research paper by Ravi et al.<span class="citation" data-cites="ravi"></span>. Note that in this case setting 2 consisted only of data from one subject, while the test data was from another subject (setting 1 and 2 corresponds to respectively setting 2 and 4 in the paper by Ravi et al.).</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">Setting 1</td>
+<td style="text-align: center;">Setting 2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Decision tree</td>
+<td style="text-align: center;">98.53</td>
+<td style="text-align: center;">57.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bagging</td>
+<td style="text-align: center;">95.22</td>
+<td style="text-align: center;">63.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Boosting</td>
+<td style="text-align: center;">98.35</td>
+<td style="text-align: center;">57.00</td>
+</tr>
+</tbody>
+</table>
+<p><span id="tab:ravi_results" label="tab:ravi_results">[tab:ravi_results]</span></p>
+
+<figure>
+<embed src="Figures/confusionmatrix_double.pdf" /><figcaption>Confusion matrices. Left: Setting 1, using XGBoost. Right: Setting 2, using gradient boosting.</figcaption>
+</figure>
+<p><span id="fig:confusion_matrix" label="fig:confusion_matrix">[fig:confusion_matrix]</span></p>
+
+<figure>
+<embed src="Figures/featimp-case1.pdf" /><figcaption>Feature importance. The feature indeces are found in table <a href="#tab:features" data-reference-type="ref" data-reference="tab:features">[tab:features]</a>.</figcaption>
+</figure>
+<p><span id="fig:feature_importance" label="fig:feature_importance">[fig:feature_importance]</span></p>
+<h1 id="sec:Discussion">Discussion</h1>
+<p>For setting 1 (mixed subjects) we found that all of our classifiers performed almost perfectly, with accuracy scores in the <span class="math inline">\(99\)</span>-th percentile on the test data in almost all of the cases (table <a href="#tab:accuracy" data-reference-type="ref" data-reference="tab:accuracy">[tab:accuracy]</a>). The single decision tree performed almost equally as well as the ensemble and boosting methods, which at first thought is quite surprising, though it’s configuration is of a high complexity, with a tree depth of 19. We achieve high accuracy scores with all of our classifiers, but the parameter configurations that were found to be best, were in most cases an edge case of the grid search. Due to the high computational cost of further reducing the error, we have opted to not expand the grid search.</p>
+<p>Although there is very low variance in the error of our models for the mixed subjects case, there is good reason to suspect that the models are overfitted to the movement patterns of these 15 subjects, due to the training data being very similar to the test data. This suspicion is very much supported by our results when training and testing the models on separate subjects, where we from table <a href="#tab:accuracy" data-reference-type="ref" data-reference="tab:accuracy">[tab:accuracy]</a> see that the prediction accuracy is considerably lower for all the models, with a simple decision tree being the worst with <span class="math inline">\(7.2\%\)</span> accuracy, and the gradient boosted trees the best with <span class="math inline">\(19.5\%\)</span>. Since we have used data from the same subjects for training and validation, it is a challenging task to tune the hyper parameters of the models in this manner such that they generalize to the movement patterns of other subjects. A better approach to performing this task may have been to use data from separate subjects in training, validation and testing, as this likely would reduce the high variance for more biased models which generalize better.</p>
+<p>Figure <a href="#fig:feature_importance" data-reference-type="ref" data-reference="fig:feature_importance">[fig:feature_importance]</a> gives an indication of what features are deemed as most important by the various algorithms. The ranges of all axes are in general not contributing much to the model, while features like the standard deviation of the acceleration in <span class="math inline">\(y\)</span>-direction and the velocity in <span class="math inline">\(y\)</span>-direction are given high significance. These results might suggest that some features could be dropped from the dataset without worsening the results. However, because of the poor performance of the models in setting 2, it could be argued that adding additional features to the set is worth exploring; for example, some researches have had success with using high- and low-frequency filters on the accelerometer data<span class="citation" data-cites="Casale2011"></span>. Even so, the main findings of this analysis suggests that overfitting of the training data is primary problem.</p>
+<p>Comparing our results with those of Ravi et al.<span class="citation" data-cites="ravi"></span> in table <a href="#tab:accuracy" data-reference-type="ref" data-reference="tab:accuracy">[tab:accuracy]</a>, we see that their decision tree, bagging and boosting classifiers achieve very similar accuracy scores as ours when mixing the subjects (setting 1), but there is a big difference in classification accuracy when separate subjects are used for training and testing (setting 2). It is not clear in their paper which hyper parameters they have used in their models, but we suspect that they are composed of trees with a considerably higher bias. They have also included correlation between the axes as predictors, but we chose to leave it out since our initial exploration of adding this feature seemed fruitless. Additionally, Ravi et al. used a different (though similar) dataset, so it is difficult to provide a direct comparison.</p>
+<h1 id="sec:Conclusion">Conclusion</h1>
+<p>In this project we have studied the ability of tree-based and ensemble learning methods to recognize human activities based on accelerometer data. When using a training set containing data from all subjects (setting 1), both the single desicion tree, bagging, random forests and the three boosting methods gave a very high test accuracy score. The poorest performance was by the decision tree with <span class="math inline">\(97.8\%\)</span>, and the best was by gradient boosting and XGBoost with <span class="math inline">\(99.5\%\)</span>. Even though the methods can easily predict the target values when they are trained on all subjects, the overfitting problem becomes evident when testing the models on a set with separate subjects (setting 2). In this case the lowest score was <span class="math inline">\(7.2\%\)</span> by the decision tree, and the highest was <span class="math inline">\(19.5\%\)</span> by gradient boosting. These models were based on parameters tuned using a cross-validation grid search, which contributed greatly to the overfitting of the training data. Setting 2 is arguably the most realistic and interesting case, because it is much more useful to be able to use an activity recognition model on a subject without having to train the model specifically on data from said subject. The lack of generalization for models using setting 2 has also been experienced by other researchers<span class="citation" data-cites="Jordao2018"></span> and seems to be a common challenge, because subjects perform the same activities in different ways. Our suggestion for future research is to experiment with using separate subjects for the training and validation set when performing cross-validation for parameter tuning, which might decrease the variance of the final result, and provide a more generalized model. We also explored some alternative ways of dealing with the overfitting problem, mainly by reducing the complexity of the models; this can be reviewed in the Appendix.</p>
+
+
+<h1 id="sec:Appendix">Appendix</h1>
+<p>As mentioned in the discussion above, table <a href="#tab:accuracy" data-reference-type="ref" data-reference="tab:accuracy">[tab:accuracy]</a> seemed to indicate that the models were highly overfitted to the training data, which resulted in terrible test performance in setting 2. In order to deal with this problem, we experimented with using trees with fewer splits. We achieved a significant increase in accuracy score by doing this, as shown in table <a href="#tab:accuracy2" data-reference-type="ref" data-reference="tab:accuracy2">[tab:accuracy2]</a>. By reducing the tree depth to 3 for the decision tree, bagging and random forest, the test accuracies were raised to <span class="math inline">\(40.3\%\)</span>, <span class="math inline">\(40.2\%\)</span> and <span class="math inline">\(45.1\%\)</span> for the respective methods. Figure <a href="#fig:decisiontree" data-reference-type="ref" data-reference="fig:decisiontree">[fig:decisiontree]</a> shows a graphical overview of the decision tree with a maximum depth of 3, and one thing to note is that only 5 of the 7 classes are represented by the leaf nodes, which is something that also should be considered when creating biased tree models with shallow depths.</p>
+<p>The boosting methods were also improved by reducing both the max depth, the number of estimators and the learning rate, and XGBoost gave the best accuracy score, <span class="math inline">\(60.5\%\)</span>, with a max depth of only <span class="math inline">\(1\)</span>. The resulting confusion matrix based on the XGBoost model is shown in figure <a href="#fig:xgboost_confusion_matrix" data-reference-type="ref" data-reference="fig:xgboost_confusion_matrix">[fig:xgboost_confusion_matrix]</a>. It is clear that the results have improved greatly for setting 2, but it is still far from usable in terms of separating the seven activities based on the dataset.</p>
+
+<figure>
+<embed src="Figures/activity_tree.pdf" id="fig:decisiontree" /><figcaption>Decision tree for setting 2, and an accuracy of <span class="math inline">\(40.3\%\)</span>.<span label="fig:decisiontree"></span></figcaption>
+</figure>
+<table>
+<caption>Accuracy of classifiers on setting 2, when using a shallow depth in order to reduce overfitting.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classifier</th>
+<th style="text-align: center;">Estimators</th>
+<th style="text-align: center;">Max depth</th>
+<th style="text-align: center;">Learning rate</th>
+<th style="text-align: center;">Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Decision tree</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">40.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bagging</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">40.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Random forest</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">45.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AdaBoost</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">35.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gradient boosting</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">43.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">XGBoost</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">60.5</td>
+</tr>
+</tbody>
+</table>
+<p>’ <span id="tab:accuracy2" label="tab:accuracy2">[tab:accuracy2]</span></p>
+
+<figure>
+<embed src="Figures/20191206-125914-confusionmatrix.pdf" /><figcaption>Confusion matrix using XGBoost, with parameters as specified in table <a href="#tab:accuracy2" data-reference-type="ref" data-reference="tab:accuracy2">[tab:accuracy2]</a>, and an accuracy score of <span class="math inline">\(60.5\%\)</span>.</figcaption>
+</figure>
+<p><span id="fig:xgboost_confusion_matrix" label="fig:xgboost_confusion_matrix">[fig:xgboost_confusion_matrix]</span></p>
+<p>Another possibility is to simplify the targets, and check whether the learning algorithms perform better when dealing with activity categories, instead of the relatively specific activities we had in the original dataset. In order to investigate this, we combined the target in the following way:</p>
+<ul>
+<li><p><strong>1. Working at computer</strong> (unchanged class 1).</p></li>
+<li><p><strong>2. Standing.</strong> Combined class 3 (&quot;standing&quot;) and 7 (&quot;talking while standing&quot;).</p></li>
+<li><p><strong>3. Walking.</strong> Combined class 4 (&quot;walking&quot;) and 6 (&quot;walking and talking with someone&quot;).</p></li>
+<li><p><strong>4. Going up/down stairs</strong> (unchanged class 5).</p></li>
+<li><p>Class 2 (&quot;standing up, walking and going up/down stairs&quot;) was removed from the dataset, due to its complex nature.</p></li>
+</ul>
+<p>With this simplified dataset, we created a new model using XGBoost, with 50 estimators, max depth of 3, and a learning rate of <span class="math inline">\(0.01\)</span>. The resulting accuracy score was <span class="math inline">\(65.5\%\)</span>, and the confusion matrix is shown in figure <a href="#fig:xgboost_confusion_matrix_simplified" data-reference-type="ref" data-reference="fig:xgboost_confusion_matrix_simplified">[fig:xgboost_confusion_matrix_simplified]</a>. As we can see, this model is performing better, but still confuses some activity categories. The most notable confusion happens between class 3 and 4 of the simplified targets, &quot;walking&quot; and &quot;going up/down stairs&quot;, which intuitively is reasonable, since these are similar activities that both involve walking.</p>
+
+<figure>
+<embed src="Figures/20191206-182459-confusionmatrix.pdf" /><figcaption>Confusion matrix using XGBoost on a simplified dataset, giving an accuracy score of <span class="math inline">\(65.5\%\)</span>. Number of estimators was 50, max depth 3, and the learning rate <span class="math inline">\(0.01\)</span>.</figcaption>
+</figure>
+<p><span id="fig:xgboost_confusion_matrix_simplified" label="fig:xgboost_confusion_matrix_simplified">[fig:xgboost_confusion_matrix_simplified]</span></p>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Link to the dataset at UCI: <a href="https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer" class="uri">https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Link to the Scikit-Learn implementation of AdaBoost: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier" class="uri">https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>The data set is available at the UCI website: <a href="https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer" class="uri">https://archive.ics.uci.edu/ml/datasets/Activity+Recognition+from+Single+Chest-Mounted+Accelerometer</a><a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>Overlapping between consecutive windows has demonstrated good results in previous work <span class="citation" data-cites="devaul"></span>.<a href="#fnref4" class="footnote-back">↩</a></p></li>
+</ol>
+</section>
+</body>
+</html>

@@ -3,21 +3,21 @@
 
 \subsection{Decision Trees}
 Decision trees is a powerful machine learning algorithm capable of fitting complex data sets, used both for classification and regression. The structure of a decision tree is much like a real life tree, and consists of nodes, branches and leaves, where a node represents a test on a descriptive feature in the data, the branch represents the outcome of this test, and the leaves represent an outcome or a target feature. The main idea is to find the descriptive features in the data which contain the most information about the target feature, and then split the data set along these values such that the feature values of the underlying data set are as pure as possible. The most common measures of the impurity of a node is the \textit{gini index}\cite{geron}[p. 180]:
-\begin{align}
+\begin{equation}
 \label{eq:gini_index}
     g_m = 1 - \sum_{k=1}^K p_{m, k}^2
-\end{align}
+\end{equation}
 and the \textit{information entropy}\cite{geron}[p. 184]:
-\begin{align}
+\begin{equation}
 \label{eq:info_entropy}
     s_m = - \sum_{k=1}^K p_{m, k}\log{p_{m,k}}.
-\end{align}
+\end{equation}
 where $p$ is the ratio of class $k$ instances among the training instances in node $m$. A high value of either of these measures would represent a node which contains little information about which class the observation belongs to, and conversely a low or zero value represents a node with only one outcome, resulting in a leaf node.
 
 In building a tree, the \textit{Classification and Regression Tree} (CART) algorithm is commonly used, which splits the training set into two subsets using a single feature $k$ and threshold $t_k$. This pair $(k, t_k)$ is found by minimizing the cost function given by\cite{geron}[p. 182]:
-\begin{align}
+\begin{equation}
     C(k, t_k) = \frac{m_{left}}{m}G_{left} + \frac{m_{right}}{m}G_{right}
-\end{align}
+\end{equation}
 where $G_{left/right}$ measures the impurity(eq. \ref{eq:gini_index} or \ref{eq:info_entropy}) of the left and right subset and $m_{left/right}$ is the number of instances in the left and right subsets. Once a split has been made, the procedure recursively repeats for the subsets until the impurity reaches zero. This strategy by itself will likely lead to a very overfit model which does not generalize, so it is common to specify either a maximum tree depth or a minimum impurity threshold which should result in a leaf node.
 
  Since the CART algorothm uses node impurity for node splitting, this measure also tells us something about how important a given feature is to determining the outcome of an observation, which can give additional insight into the problem at hand by allowing us to visualize the tree in terms of how it makes predictions. Feature importance is also possible to extract when using ensemble learning methods, which are discussed in the section below. This is done by taking a weighted average, across all the trees in the forest, of how much a given descriptive features reduces node impurity.

@@ -1,0 +1,358 @@
+/* File:        report.css
+ * Author:      Erik Johannes Husom
+ * Date:        2019-12-14
+ * Description: Style for knowledge base, including flashcard style
+ * definitions.
+ */
+
+:root {
+    --main-font-color: rgb(57, 56, 56);
+    --secondary-font-color: rgb(142, 142, 142);
+}
+
+/*Body{{{*/
+body {
+    font-family: sans-serif;
+    line-height: 1.5;
+    color: var(--main-font-color);
+    box-sizing: border-box;
+    /* Constraining width, and centering */
+    max-width: 52em;
+    margin: auto;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+body.wide {
+    max-width: none;
+}
+/*}}}*/
+
+/*Header{{{*/
+header {
+    top: 0;
+    right: 0;
+    left: 0;
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+}
+/*}}}*/
+
+/*Nav{{{*/
+nav {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--secondary-font-color);
+  text-transform: lowercase;
+}
+/*}}}*/
+
+/*Headers{{{*/
+h1, h2, h3, h4, h5, h6 {
+  /* display: inline; */
+  /* font-size: 16px; */
+  /* font-weight: 600; */
+  /* text-transform: lowercase; */
+}
+
+h2 {
+    color: var(--main-font-color);
+}
+
+h2.category {
+    /*color: rgb(80,80,80);*/
+  color: var(--main-font-color);
+}
+
+h3.space {
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+h3.cheatsheet {
+  display: block;
+  font-size: 1.4em;
+}
+
+h4 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: lowercase;
+    color: var(--secondary-font-color);
+}
+/*}}}*/
+
+/*Hr (line){{{*/
+hr {
+  border: 0.1rem solid rgb(233, 233, 233);
+}
+/*}}}*/
+
+/*Lists{{{*/
+ul {
+  /* list-style-type: none; */
+  /* padding-left: 0; */
+}
+
+li {
+  padding-top: 0.1rem;
+}
+/*}}}*/
+
+/*Links{{{*/
+a:link, a:visited {
+  color:  var(--secondary-font-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(17, 131, 185);
+}
+
+a.ghost:link, a.ghost:visited, a.ghost:hover {
+  color: var(--main-font-color);
+  text-decoration: none;
+}
+/*}}}*/
+
+/*Tables{{{*/
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+/*}}}*/
+
+/*Embeds{{{*/
+
+embed {
+    width: 100%;
+    height: 20em;
+}
+/*}}}*/
+
+/*Gallery{{{*/
+.image_feed {
+  display: block;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  height: 50%;
+  overflow: hidden;
+}
+
+.image_thumb {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.image_logo {
+    width: 30%;
+}
+
+.imagerow {
+  display: inline-block;
+  position: relative;
+  width: 50%;
+  height: 50%;
+  overflow: hidden;
+}
+
+.imagemasonry {
+    column-count: 1;
+    column-gap: 0.2rem;
+    margin-right: 3%;
+}
+
+.imagemasonry2 {
+  column-count: 1;
+  column-gap: 0.2rem;
+  margin-right: 3%;
+}
+
+.imagemasonry4 {
+  column-count: 2;
+  column-gap: 0.2rem;
+  margin-right: 3%;
+}
+
+.item {
+  font-size: 0.8em;
+  display: inline-block;
+  margin: 0 0 1em;
+  padding: 0.6rem;
+  width: 100%;
+  box-shadow: 1px 1px 10px  1px rgb(193, 193, 193);
+}
+
+.imageitem {
+    font-size: 0.8em;
+    display: inline-block;
+    /*margin: 0 0 0.1rem;*/
+    /*padding: 0.1rem;*/
+    position: relative;
+    width: 100%;
+}
+
+.imagetext {
+    position: absolute;
+    bottom: 20px;
+    right: 20px; 
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: black;
+    color: white;
+    font-weight: 400;
+}
+/*}}}*/
+
+/*Webcam{{{*/
+.webcam {
+    width: 100%;
+    display: block;
+    padding-bottom: 1em;    
+}    
+/*}}}*/
+
+/*Map style{{{*/
+#map {
+    width: 50%;
+    height: 70vh;
+} 
+/*}}}*/
+
+/*Tablets and mobile devices{{{*/
+@media screen and (max-width: 992px) {
+    body {
+        max-width: none;
+    }
+    .image_logo {
+        width: 70%;
+    }
+    .masonry {
+        column-count: 2;
+    }
+    .webcam {
+        width: 100%;
+        height: 100%;
+    }
+    #map {
+        width: 100%;
+        height: 70vh;
+    }
+}
+/* ======== Tablets ========= */
+/* @media screen and (min-width: 481px) and (max-width: 991px) { */
+/*     .imagemasonry4 { */
+/*         column-count: 2; */
+/*     } */
+/* } */
+/*}}}*/
+
+/*Laptops and large screens{{{*/
+@media screen and (min-width: 992px) {
+
+    .masonry {
+        column-count: 3;
+    }
+    .imagemasonry {
+        column-count: 3;
+    }
+    .imagemasonry2 {
+        column-count: 1;
+    }
+    .imagemasonry4 {
+        column-count: 4;
+    }
+}
+/*}}}*/
+
+/*Code boxes{{{*/
+
+.masonry {
+  column-count: 1;
+  column-gap: 3em;
+  margin-right: 3%;
+}
+
+li.codelist {
+  border-bottom: 0.05rem solid rgb(233, 233, 233);
+}
+
+.entry {
+  font-size: 0.85rem;
+  color: rgb(0, 0, 0,);
+  font-weight: 550;
+  margin-right: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+pre {
+  border-top: 0.05rem solid rgb(233, 233, 233);
+  border-bottom: 0.05rem solid rgb(233, 233, 233);
+  padding-top: 0.5rem;
+  overflow: auto;
+  /* white-space: pre-wrap; */
+}
+
+
+ pre code {
+  font-size: 0.8em;
+  color: rgb(0, 0, 0,);
+}
+
+
+.definition {
+  font-size: 0.7rem;
+  color: rgb(122, 122, 122);
+}
+
+.description {
+  display: block;
+  font-size: 0.7rem;
+  color: rgb(122, 122, 122);
+}
+/*}}}*/
+
+/*Footer{{{*/
+footer {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin-top: 2rem;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.6rem;
+}
+/*}}}*/
+
+/*Defintion/description{{{*/
+dl {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    background: #C0CBFF;
+}
+
+dt {
+    font-weight: 600;
+}
+
+/* dd { */
+/*     display: none; */
+/* } */
+
+dt:active + dd{
+    display: block;
+}
+
+dt:hover + dd{
+    display: block;
+}
+/*}}}*/
+
